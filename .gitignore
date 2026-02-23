@@ -3,4 +3,5 @@ node_modules/
 data/
 .env
 *.db
-docs/
+docs/video.png
+docs/youtube.png
