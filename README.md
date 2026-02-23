@@ -26,6 +26,21 @@ Självhostad mediaspelare byggd med Next.js 14. Streama lokala filer, direkta UR
 - [NextAuth.js](https://next-auth.js.org/)
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
+## Skärmdumpar
+
+### Surfplatta
+
+![Startsida — surfplatta](docs/Screenshot_tablet_2.jpg)
+
+![Videospelaren — surfplatta](docs/Screenshot_tablet_1.jpg)
+
+### Mobil
+
+<p float="left">
+  <img src="docs/Screenshot_mobile_1.png" width="48%" />
+  <img src="docs/Screenshot_mobile_2.png" width="48%" />
+</p>
+
 ## Kom igång
 
 ### Docker (rekommenderat)
