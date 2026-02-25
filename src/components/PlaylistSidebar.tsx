@@ -15,6 +15,16 @@ export default function PlaylistSidebar({ items, currentItemId, playlistId }: Pr
   const [overIndex, setOverIndex] = useState<number | null>(null);
   const dragIndex = useRef<number | null>(null);
 
+  function handleRemove(playlistItemId: number) {
+    const prev = localItems;
+    setLocalItems(prev.filter((it) => it.playlist_item_id !== playlistItemId));
+    fetch(`/api/playlists/${playlistId}/items/${playlistItemId}`, {
+      method: "DELETE",
+    }).catch(() => {
+      setLocalItems(prev); // revert on network failure
+    });
+  }
+
   function onDragStart(e: React.DragEvent, index: number) {
     dragIndex.current = index;
     e.dataTransfer.effectAllowed = "move";
@@ -116,6 +126,18 @@ export default function PlaylistSidebar({ items, currentItemId, playlistId }: Pr
                 )}
               </div>
             </Link>
+
+            {/* Remove button */}
+            <button
+              onClick={(e) => { e.preventDefault(); handleRemove(item.playlist_item_id); }}
+              className="shrink-0 opacity-0 group-hover:opacity-60 hover:!opacity-100 text-yt-muted hover:text-red-400 transition-opacity p-1 rounded"
+              title="Remove from playlist"
+              aria-label="Remove from playlist"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              </svg>
+            </button>
           </div>
         );
       })}
