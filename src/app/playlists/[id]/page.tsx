@@ -96,7 +96,7 @@ export default async function PlaylistDetailPage({
               </div>
               <PlaylistSidebar
                 items={items}
-                currentIndex={safeIndex}
+                currentItemId={currentItem.playlist_item_id}
                 playlistId={playlistId}
               />
             </div>
