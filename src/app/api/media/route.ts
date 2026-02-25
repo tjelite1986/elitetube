@@ -17,9 +17,9 @@ export async function GET(req: NextRequest) {
     const idList = idsParam.split(",").map(Number).filter((n) => !isNaN(n) && n > 0);
     if (idList.length === 0) return NextResponse.json({ items: [] });
     const placeholders = idList.map(() => "?").join(",");
-    const rows = db.prepare(`SELECT * FROM media WHERE id IN (${placeholders})`).all(...idList);
+    const rows = db.prepare(`SELECT * FROM media WHERE id IN (${placeholders})`).all(...idList) as { id: number }[];
     // Preserve the caller's requested order
-    const ordered = idList.map((id) => rows.find((r: Record<string, unknown>) => r.id === id)).filter(Boolean);
+    const ordered = idList.map((id) => rows.find((r) => r.id === id)).filter(Boolean);
     return NextResponse.json({ items: ordered });
   }
 

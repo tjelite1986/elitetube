@@ -78,6 +78,12 @@ export default async function AdminPage() {
               description="Rename or delete tags shown as categories on the 18+ page"
               icon="#"
             />
+            <AdminCard
+              href="/admin/stats"
+              title="Statistics"
+              description="Views, storage, top content and engagement overview"
+              icon="📊"
+            />
           </div>
         </div>
       </main>
