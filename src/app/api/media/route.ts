@@ -10,6 +10,19 @@ export async function GET(req: NextRequest) {
 
   const db = getDb();
   const { searchParams } = new URL(req.url);
+
+  // Bulk fetch by IDs (used by ContinueWatching)
+  const idsParam = searchParams.get("ids");
+  if (idsParam) {
+    const idList = idsParam.split(",").map(Number).filter((n) => !isNaN(n) && n > 0);
+    if (idList.length === 0) return NextResponse.json({ items: [] });
+    const placeholders = idList.map(() => "?").join(",");
+    const rows = db.prepare(`SELECT * FROM media WHERE id IN (${placeholders})`).all(...idList);
+    // Preserve the caller's requested order
+    const ordered = idList.map((id) => rows.find((r: Record<string, unknown>) => r.id === id)).filter(Boolean);
+    return NextResponse.json({ items: ordered });
+  }
+
   const q = searchParams.get("q");
   const category = searchParams.get("category");
   const limit = parseInt(searchParams.get("limit") || "50");

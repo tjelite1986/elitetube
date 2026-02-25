@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import MediaGrid from "@/components/MediaGrid";
 import RecentCarousel from "@/components/RecentCarousel";
 import SortFilterBar from "@/components/SortFilterBar";
+import ContinueWatching from "@/components/ContinueWatching";
 import { MediaItem } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -70,6 +71,9 @@ export default async function HomePage({
       <Header />
       <Sidebar />
       <main className="pt-14 pb-14 lg:pl-56 lg:pb-0">
+
+        {/* Continue watching — client-side, reads localStorage */}
+        <ContinueWatching />
 
         {/* Carousels — only shown without filters */}
         {recentItems.length > 0 && <RecentCarousel items={recentItems} title="Recently added" />}
