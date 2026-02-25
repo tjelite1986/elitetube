@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getDb, MediaItem } from "@/lib/db";
 import { getJob, setJob } from "@/lib/downloads";
+import { generateThumbnail } from "@/lib/thumbnail";
 import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
@@ -94,6 +95,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           .prepare("UPDATE media SET filename = ?, needs_ytdlp = 0 WHERE id = ?")
           .run(filename, id);
         setJob(id, { status: "done", progress: "Download complete", filename });
+        // Auto-generate thumbnail in the background if item has no thumbnail
+        if (!item.thumbnail_url) {
+          generateThumbnail(id).catch(() => {});
+        }
       } else {
         setJob(id, { status: "error", progress: "", error: "Downloaded file not found on disk" });
       }

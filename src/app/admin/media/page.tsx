@@ -58,6 +58,8 @@ export default function MediaAdminPage() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkFetching, setBulkFetching] = useState(false);
   const [bulkProgress, setBulkProgress] = useState("");
+  const [thumbFetching, setThumbFetching] = useState(false);
+  const [thumbProgress, setThumbProgress] = useState("");
   const router = useRouter();
 
   async function load() {
@@ -244,6 +246,32 @@ export default function MediaAdminPage() {
     }
     setBulkFetching(false);
     setBulkProgress("");
+    setSelectedIds(new Set());
+    load();
+  }
+
+  async function handleGenThumb(id: number) {
+    await fetch(`/api/media/${id}/thumbnail`, { method: "POST" });
+    load();
+  }
+
+  async function handleBulkGenThumbs() {
+    const targets = filtered.filter(
+      (i) => selectedIds.has(i.id) && i.filename && i.type !== "image"
+    );
+    if (targets.length === 0) return;
+    setThumbFetching(true);
+    setThumbProgress(`0 / ${targets.length}`);
+    let done = 0;
+    for (const item of targets) {
+      try {
+        await fetch(`/api/media/${item.id}/thumbnail`, { method: "POST" });
+      } catch { /* continue */ }
+      done++;
+      setThumbProgress(`${done} / ${targets.length}`);
+    }
+    setThumbFetching(false);
+    setThumbProgress("");
     setSelectedIds(new Set());
     load();
   }
@@ -485,6 +513,17 @@ export default function MediaAdminPage() {
             )}
             {selectedIds.size > 0 && !bulkFetching && (
               <button
+                onClick={handleBulkGenThumbs}
+                disabled={thumbFetching}
+                className="bg-yellow-600 hover:bg-yellow-700 disabled:opacity-60 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+              >
+                {thumbFetching
+                  ? `Generating... ${thumbProgress}`
+                  : `Gen thumbs for ${selectedIds.size}`}
+              </button>
+            )}
+            {selectedIds.size > 0 && !bulkFetching && !thumbFetching && (
+              <button
                 onClick={handleBulkDelete}
                 className="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
               >
@@ -539,6 +578,15 @@ export default function MediaAdminPage() {
                   >
                     Play
                   </Link>
+                  {item.filename && item.type !== "image" && (
+                    <button
+                      onClick={() => handleGenThumb(item.id)}
+                      className="text-xs text-yt-muted hover:text-yellow-400 transition-colors"
+                      title="Generate thumbnail via ffmpeg"
+                    >
+                      Thumb
+                    </button>
+                  )}
                   <button
                     onClick={() => openEdit(item)}
                     className="text-xs text-yt-muted hover:text-blue-400 transition-colors"
