@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MediaItem } from "@/lib/db";
 import { formatDuration, getMediaType } from "@/lib/media";
+import { usePreview } from "@/hooks/usePreview";
 
 function getPreviewUrl(item: MediaItem): string | null {
   const type = getMediaType(item);
@@ -78,30 +79,7 @@ function CarouselCard({ item }: { item: MediaItem }) {
   const thumb = item.thumbnail_url || "/placeholder-thumb.svg";
   const duration = formatDuration(item.duration);
   const previewUrl = getPreviewUrl(item);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [active, setActive] = useState(false);
-
-  function handleMouseEnter() {
-    if (!previewUrl) return;
-    timerRef.current = setTimeout(() => {
-      setActive(true);
-      videoRef.current?.play().catch(() => {});
-    }, 400);
-  }
-
-  function handleMouseLeave() {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    setActive(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  }
+  const { videoRef, active, thumbHandlers } = usePreview(previewUrl);
 
   return (
     <Link
@@ -112,8 +90,7 @@ function CarouselCard({ item }: { item: MediaItem }) {
       {/* Thumbnail + preview */}
       <div
         className="relative aspect-video bg-yt-surface rounded-lg overflow-hidden mb-2"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        {...thumbHandlers}
       >
         <Image
           src={thumb}

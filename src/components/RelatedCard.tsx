@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { MediaItem } from "@/lib/db";
 import { formatDuration, formatViews, getMediaType } from "@/lib/media";
+import { usePreview } from "@/hooks/usePreview";
 
 function getPreviewUrl(item: MediaItem): string | null {
   const type = getMediaType(item);
@@ -14,38 +14,14 @@ function getPreviewUrl(item: MediaItem): string | null {
 export default function RelatedCard({ item }: { item: MediaItem }) {
   const thumb = item.thumbnail_url || "/placeholder-thumb.svg";
   const previewUrl = getPreviewUrl(item);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [active, setActive] = useState(false);
-
-  function handleMouseEnter() {
-    if (!previewUrl) return;
-    timerRef.current = setTimeout(() => {
-      setActive(true);
-      videoRef.current?.play().catch(() => {});
-    }, 400);
-  }
-
-  function handleMouseLeave() {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    setActive(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  }
+  const { videoRef, active, thumbHandlers } = usePreview(previewUrl);
 
   return (
     <a href={`/watch/${item.id}`} className="flex gap-2 group">
       {/* Thumbnail + preview */}
       <div
         className="relative w-40 aspect-video bg-yt-surface rounded-lg overflow-hidden shrink-0"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        {...thumbHandlers}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

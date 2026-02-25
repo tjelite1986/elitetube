@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MediaItem } from "@/lib/db";
 import { formatDuration, formatViews, getMediaType } from "@/lib/media";
+import { usePreview } from "@/hooks/usePreview";
 
 function getPreviewUrl(item: MediaItem): string | null {
   const type = getMediaType(item);
@@ -20,38 +20,14 @@ export default function VideoCard({ item }: { item: MediaItem }) {
   const ago = timeAgo(item.created_at);
   const initial = item.title[0]?.toUpperCase() || "?";
   const previewUrl = getPreviewUrl(item);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [active, setActive] = useState(false);
-
-  function handleMouseEnter() {
-    if (!previewUrl) return;
-    timerRef.current = setTimeout(() => {
-      setActive(true);
-      videoRef.current?.play().catch(() => {});
-    }, 400);
-  }
-
-  function handleMouseLeave() {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    setActive(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  }
+  const { videoRef, active, thumbHandlers } = usePreview(previewUrl);
 
   return (
     <Link href={`/watch/${item.id}`} className="group block">
       {/* Thumbnail + preview */}
       <div
         className="relative aspect-video bg-yt-surface overflow-hidden rounded-none sm:rounded-xl"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        {...thumbHandlers}
       >
         {/* Thumbnail */}
         <Image
@@ -65,7 +41,7 @@ export default function VideoCard({ item }: { item: MediaItem }) {
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
         />
 
-        {/* Hover-preview video */}
+        {/* Hover/long-press preview video */}
         {previewUrl && (
           <video
             ref={videoRef}
@@ -102,7 +78,7 @@ export default function VideoCard({ item }: { item: MediaItem }) {
           </span>
         )}
 
-        {/* Preview indicator — small pulsing dot while buffering */}
+        {/* Pulsing dot while preview is active */}
         {previewUrl && (
           <span
             className={`absolute bottom-1.5 left-1.5 w-2 h-2 rounded-full bg-white transition-opacity duration-300 ${
@@ -110,9 +86,16 @@ export default function VideoCard({ item }: { item: MediaItem }) {
             }`}
           />
         )}
+
+        {/* Mobile hint: tap again to watch */}
+        {active && (
+          <span className="absolute top-1.5 left-1.5 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded sm:hidden">
+            Tap to watch
+          </span>
+        )}
       </div>
 
-      {/* Info-rad */}
+      {/* Info row */}
       <div className="flex gap-3 px-3 sm:px-0 pt-3 pb-1">
         <div className="w-9 h-9 rounded-full bg-yt-surface2 shrink-0 flex items-center justify-center text-sm font-bold text-yt-muted select-none mt-0.5">
           {initial}
