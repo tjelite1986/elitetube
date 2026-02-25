@@ -2,6 +2,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import CookieExpiredBanner from "@/components/CookieExpiredBanner";
 
 function YouTubeWatchInner() {
   const searchParams = useSearchParams();
@@ -14,12 +15,14 @@ function YouTubeWatchInner() {
   const [resolving, setResolving] = useState(true);
   const [streamUrl, setStreamUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cookiesExpired, setCookiesExpired] = useState(false);
 
   const resolve = () => {
     if (!videoId) return;
     setResolving(true);
     setError(null);
     setStreamUrl(null);
+    setCookiesExpired(false);
     const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
     fetch(`/api/resolve-url?url=${encodeURIComponent(ytUrl)}`)
       .then(r => r.json())
@@ -27,6 +30,8 @@ function YouTubeWatchInner() {
         if (data.url) {
           const proxy = `/api/proxy-stream?url=${encodeURIComponent(data.url)}&referer=${encodeURIComponent("https://www.youtube.com/")}`;
           setStreamUrl(proxy);
+        } else if (data.error_code === "COOKIES_EXPIRED") {
+          setCookiesExpired(true);
         } else {
           setError(data.error || "Could not fetch stream URL");
         }
@@ -69,15 +74,9 @@ function YouTubeWatchInner() {
               </div>
             </div>
           )}
-          {!resolving && error && (
+          {!resolving && (cookiesExpired || error) && (
             <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-4">
-              <p className="text-red-400 text-sm text-center">{error}</p>
-              <button
-                onClick={resolve}
-                className="bg-yt-surface border border-yt-border text-yt-text px-4 py-2 rounded-lg text-sm hover:bg-yt-hover transition-colors"
-              >
-                Try again
-              </button>
+              <p className="text-yt-muted text-sm">Playback unavailable</p>
               <a
                 href={ytUrl}
                 target="_blank"
@@ -99,6 +98,9 @@ function YouTubeWatchInner() {
             </video>
           )}
         </div>
+
+        {/* Cookie expired banner */}
+        {cookiesExpired && <div className="mb-4"><CookieExpiredBanner /></div>}
 
         {/* Info */}
         <div className="flex items-start justify-between gap-4">

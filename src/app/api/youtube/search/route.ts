@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { searchYoutube } from "@/lib/ytdlp";
+import { searchYoutube, YtdlpCookieError } from "@/lib/ytdlp";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -14,6 +14,9 @@ export async function GET(req: NextRequest) {
     const results = await searchYoutube(q);
     return NextResponse.json({ results });
   } catch (err: unknown) {
+    if (err instanceof YtdlpCookieError) {
+      return NextResponse.json({ error: "YouTube cookies have expired or are missing. Please update cookies.txt.", error_code: "COOKIES_EXPIRED" }, { status: 403 });
+    }
     const msg = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ error: msg || "Search failed" }, { status: 422 });
   }

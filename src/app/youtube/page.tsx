@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
+import CookieExpiredBanner from "@/components/CookieExpiredBanner";
 
 type SearchResult = {
   id: string;
@@ -39,6 +40,7 @@ function YouTubeSearchInner() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cookiesExpired, setCookiesExpired] = useState(false);
   const [searched, setSearched] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,12 +53,14 @@ function YouTubeSearchInner() {
     if (!q.trim()) return;
     setLoading(true);
     setError(null);
+    setCookiesExpired(false);
     setSearched(true);
     router.replace(`/youtube?q=${encodeURIComponent(q.trim())}`, { scroll: false });
     try {
       const res = await fetch(`/api/youtube/search?q=${encodeURIComponent(q.trim())}`);
       const data = await res.json();
-      if (data.error) { setError(data.error); setResults([]); }
+      if (data.error_code === "COOKIES_EXPIRED") { setCookiesExpired(true); setResults([]); }
+      else if (data.error) { setError(data.error); setResults([]); }
       else setResults(data.results ?? []);
     } catch {
       setError("Network error");
@@ -117,6 +121,9 @@ function YouTubeSearchInner() {
             ) : "Search"}
           </button>
         </form>
+
+        {/* Cookie expired */}
+        {cookiesExpired && <div className="mb-6"><CookieExpiredBanner /></div>}
 
         {/* Error */}
         {error && (

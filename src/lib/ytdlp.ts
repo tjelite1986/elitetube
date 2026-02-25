@@ -8,6 +8,28 @@ const YTDLP_PATH = "/usr/bin/yt-dlp";
 const FORMAT = "best[protocol=https][ext=mp4]/best[protocol=https]/bestvideo[protocol=https]+bestaudio[protocol=https]/best[ext=mp4]/best";
 const COOKIES_PATH = "/app/data/cookies.txt";
 
+// Thrown when yt-dlp returns an auth/cookie-related error
+export class YtdlpCookieError extends Error {
+  constructor(msg: string) { super(msg); this.name = "YtdlpCookieError"; }
+}
+
+const COOKIE_ERROR_PATTERNS = [
+  "sign in to confirm",
+  "not a bot",
+  "cookies",
+  "confirm your age",
+  "members only",
+  "login required",
+  "private video",
+];
+
+function throwIfCookieError(msg: string): void {
+  const lower = msg.toLowerCase();
+  if (COOKIE_ERROR_PATTERNS.some(p => lower.includes(p))) {
+    throw new YtdlpCookieError(msg);
+  }
+}
+
 // Build common args shared by all yt-dlp invocations
 function commonArgs(): string[] {
   const args: string[] = ["--js-runtimes", "node", "--remote-components", "ejs:github"];
@@ -26,11 +48,18 @@ export type YtdlpMeta = {
 };
 
 export async function fetchYtdlpMeta(url: string): Promise<YtdlpMeta> {
-  const { stdout } = await execFileAsync(
-    YTDLP_PATH,
-    [...commonArgs(), "--dump-json", "--no-playlist", "--", url],
-    { timeout: 20_000 }
-  );
+  let stdout: string;
+  try {
+    ({ stdout } = await execFileAsync(
+      YTDLP_PATH,
+      [...commonArgs(), "--dump-json", "--no-playlist", "--", url],
+      { timeout: 20_000 }
+    ));
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throwIfCookieError(msg);
+    throw err;
+  }
   const data = JSON.parse(stdout);
 
   // yt-dlp returns tags and categories as arrays
@@ -58,11 +87,18 @@ export type YtSearchResult = {
 };
 
 export async function searchYoutube(query: string, limit = 20): Promise<YtSearchResult[]> {
-  const { stdout } = await execFileAsync(
-    YTDLP_PATH,
-    [...commonArgs(), "--flat-playlist", "--dump-json", "--", `ytsearch${limit}:${query}`],
-    { timeout: 30_000 }
-  );
+  let stdout: string;
+  try {
+    ({ stdout } = await execFileAsync(
+      YTDLP_PATH,
+      [...commonArgs(), "--flat-playlist", "--dump-json", "--", `ytsearch${limit}:${query}`],
+      { timeout: 30_000 }
+    ));
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throwIfCookieError(msg);
+    throw err;
+  }
   return stdout.trim().split("\n").filter(Boolean).map(line => {
     const d = JSON.parse(line);
     const thumb = d.thumbnail ?? (Array.isArray(d.thumbnails) && d.thumbnails.length > 0
@@ -81,11 +117,18 @@ export async function searchYoutube(query: string, limit = 20): Promise<YtSearch
 }
 
 export async function resolveYtdlpUrl(url: string): Promise<string> {
-  const { stdout } = await execFileAsync(
-    YTDLP_PATH,
-    [...commonArgs(), "-g", "--no-playlist", "-f", FORMAT, "--", url],
-    { timeout: 15_000 }
-  );
+  let stdout: string;
+  try {
+    ({ stdout } = await execFileAsync(
+      YTDLP_PATH,
+      [...commonArgs(), "-g", "--no-playlist", "-f", FORMAT, "--", url],
+      { timeout: 15_000 }
+    ));
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throwIfCookieError(msg);
+    throw err;
+  }
   const lines = stdout.trim().split("\n").filter(Boolean);
   if (!lines.length) throw new Error("yt-dlp returned no URL");
   return lines[0];

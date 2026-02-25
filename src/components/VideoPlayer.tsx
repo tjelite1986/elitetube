@@ -2,16 +2,19 @@
 import { useEffect, useState } from "react";
 import { MediaItem } from "@/lib/db";
 import { isYouTubeUrl, extractYouTubeId, getMediaType } from "@/lib/media";
+import CookieExpiredBanner from "@/components/CookieExpiredBanner";
 
 function YtdlpPlayer({ item }: { item: MediaItem }) {
   const [resolving, setResolving] = useState(true);
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
   const [resolveError, setResolveError] = useState<string | null>(null);
+  const [cookiesExpired, setCookiesExpired] = useState(false);
 
   const resolve = () => {
     setResolving(true);
     setResolveError(null);
     setResolvedUrl(null);
+    setCookiesExpired(false);
     fetch(`/api/resolve-url?url=${encodeURIComponent(item.url!)}`)
       .then((r) => r.json())
       .then((data) => {
@@ -24,6 +27,8 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
           } catch { /* invalid URL */ }
           const proxy = `/api/proxy-stream?url=${encodeURIComponent(data.url)}&referer=${encodeURIComponent(referer)}`;
           setResolvedUrl(proxy);
+        } else if (data.error_code === "COOKIES_EXPIRED") {
+          setCookiesExpired(true);
         } else {
           setResolveError(data.error || "Could not fetch stream URL");
         }
@@ -42,6 +47,17 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
       <div className="w-full aspect-video bg-black rounded-xl flex flex-col items-center justify-center gap-3">
         <div className="w-8 h-8 border-4 border-yt-muted border-t-white rounded-full animate-spin" />
         <p className="text-yt-muted text-sm">Fetching stream URL...</p>
+      </div>
+    );
+  }
+
+  if (cookiesExpired) {
+    return (
+      <div className="w-full">
+        <div className="w-full aspect-video bg-black rounded-xl flex items-center justify-center mb-4">
+          <p className="text-yt-muted text-sm">Playback unavailable</p>
+        </div>
+        <CookieExpiredBanner />
       </div>
     );
   }
