@@ -84,6 +84,12 @@ export default async function AdminPage() {
               description="Views, storage, top content and engagement overview"
               icon="📊"
             />
+            <AdminCard
+              href="/admin/scan"
+              title="Scan library"
+              description="Auto-import new video and audio files from the media directory"
+              icon="🔍"
+            />
           </div>
         </div>
       </main>
