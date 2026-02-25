@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { PlaylistItemWithMedia } from "@/lib/db";
 import { formatDuration } from "@/lib/media";
 
@@ -11,9 +12,26 @@ interface Props {
 }
 
 export default function PlaylistSidebar({ items, currentItemId, playlistId }: Props) {
+  const router = useRouter();
   const [localItems, setLocalItems] = useState(items);
   const [overIndex, setOverIndex] = useState<number | null>(null);
   const dragIndex = useRef<number | null>(null);
+
+  function handleShuffle() {
+    const shuffled = [...localItems];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setLocalItems(shuffled);
+    const order = shuffled.map((it) => it.playlist_item_id);
+    fetch(`/api/playlists/${playlistId}/items`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ order }),
+    }).catch(() => {});
+    router.push(`/playlists/${playlistId}?index=0`);
+  }
 
   function handleRemove(playlistItemId: number) {
     const prev = localItems;
@@ -66,6 +84,21 @@ export default function PlaylistSidebar({ items, currentItemId, playlistId }: Pr
 
   return (
     <div className="flex flex-col gap-0.5 overflow-y-auto max-h-[80vh]">
+      {/* Shuffle button */}
+      <button
+        onClick={handleShuffle}
+        className="flex items-center gap-1.5 text-xs text-yt-muted hover:text-yt-text transition-colors px-2 py-1.5 rounded-lg hover:bg-yt-hover mb-0.5 self-start"
+        title="Shuffle playlist"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+          <polyline points="16 3 21 3 21 8" />
+          <line x1="4" y1="20" x2="21" y2="3" />
+          <polyline points="21 16 21 21 16 21" />
+          <line x1="15" y1="15" x2="21" y2="21" />
+        </svg>
+        Shuffle
+      </button>
+
       {localItems.map((item, i) => {
         const isActive = item.playlist_item_id === currentItemId;
         const isDragTarget = overIndex === i && dragIndex.current !== null && dragIndex.current !== i;
