@@ -4,7 +4,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
 import SpeedSelector from "@/components/SpeedSelector";
+import PlayerOsd from "@/components/PlayerOsd";
 import { useVideoResume } from "@/hooks/useVideoResume";
+import { usePlayerKeyboard } from "@/hooks/usePlayerKeyboard";
 
 function YouTubeWatchInner() {
   const searchParams = useSearchParams();
@@ -19,6 +21,7 @@ function YouTubeWatchInner() {
   const [error, setError] = useState<string | null>(null);
   const [cookiesExpired, setCookiesExpired] = useState(false);
   const { videoRef, resumedFrom } = useVideoResume(`yt_${videoId}`, !!streamUrl);
+  const { osd } = usePlayerKeyboard(videoRef);
 
   const resolve = () => {
     if (!videoId) return;
@@ -106,6 +109,7 @@ function YouTubeWatchInner() {
               >
                 Your browser does not support the video element.
               </video>
+              <PlayerOsd text={osd} />
             </>
           )}
         </div>

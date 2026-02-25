@@ -4,7 +4,9 @@ import { MediaItem } from "@/lib/db";
 import { extractYouTubeId, getMediaType } from "@/lib/media";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
 import SpeedSelector from "@/components/SpeedSelector";
+import PlayerOsd from "@/components/PlayerOsd";
 import { useVideoResume } from "@/hooks/useVideoResume";
+import { usePlayerKeyboard } from "@/hooks/usePlayerKeyboard";
 
 /* ── Resume chip ── */
 function ResumeChip({ label }: { label: string }) {
@@ -18,6 +20,7 @@ function ResumeChip({ label }: { label: string }) {
 /* ── Local / direct video player ── */
 function LocalVideoPlayer({ item, src }: { item: MediaItem; src: string }) {
   const { videoRef, resumedFrom } = useVideoResume(item.id);
+  const { osd } = usePlayerKeyboard(videoRef);
   return (
     <div>
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
@@ -25,6 +28,7 @@ function LocalVideoPlayer({ item, src }: { item: MediaItem; src: string }) {
         <video ref={videoRef} controls autoPlay className="w-full h-full" src={src}>
           Your browser does not support the video element.
         </video>
+        <PlayerOsd text={osd} />
       </div>
       <SpeedSelector videoRef={videoRef} />
     </div>
@@ -34,6 +38,7 @@ function LocalVideoPlayer({ item, src }: { item: MediaItem; src: string }) {
 /* ── Audio player ── */
 function AudioPlayer({ item, src }: { item: MediaItem; src: string }) {
   const { videoRef, resumedFrom } = useVideoResume(item.id);
+  usePlayerKeyboard(videoRef);
   return (
     <div className="w-full bg-yt-surface rounded-xl p-6">
       {resumedFrom && (
@@ -56,6 +61,7 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
   const [resolveError, setResolveError] = useState<string | null>(null);
   const [cookiesExpired, setCookiesExpired] = useState(false);
   const { videoRef, resumedFrom } = useVideoResume(item.id, !!resolvedUrl);
+  const { osd } = usePlayerKeyboard(videoRef);
 
   const resolve = () => {
     setResolving(true);
@@ -129,6 +135,7 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
         <video ref={videoRef} controls autoPlay className="w-full h-full" src={resolvedUrl!}>
           Your browser does not support the video element.
         </video>
+        <PlayerOsd text={osd} />
       </div>
       <SpeedSelector videoRef={videoRef} />
     </div>
