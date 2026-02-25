@@ -33,9 +33,9 @@ export function formatDuration(seconds?: number): string {
 }
 
 export function formatViews(views: number): string {
-  if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M visningar`;
-  if (views >= 1_000) return `${(views / 1_000).toFixed(1)}K visningar`;
-  return `${views} visningar`;
+  if (views >= 1_000_000) return `${(views / 1_000_000).toFixed(1)}M views`;
+  if (views >= 1_000) return `${(views / 1_000).toFixed(1)}K views`;
+  return `${views} views`;
 }
 
 export function getMediaStreamUrl(item: MediaItem): string {
@@ -52,6 +52,6 @@ export function getMediaType(item: MediaItem): "youtube" | "direct" | "local" | 
   if (item.needs_ytdlp) return "ytdlp";
   if (item.url && isYouTubeUrl(item.url)) return "youtube";
   if (item.url && isDirectMediaUrl(item.url)) return "direct";
-  if (item.url) return "ytdlp"; // webb-URL (pornhub m.fl.) → yt-dlp automatiskt
+  if (item.url) return "ytdlp"; // web URL (pornhub etc.) → yt-dlp automatically
   return "local";
 }

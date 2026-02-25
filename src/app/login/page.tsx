@@ -24,7 +24,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (res?.error) {
-      setError("Felaktigt användarnamn eller lösenord");
+      setError("Incorrect username or password");
     } else {
       router.push("/");
       router.refresh();
@@ -41,11 +41,11 @@ export default function LoginPage() {
 
       {/* Form */}
       <div className="bg-yt-surface border border-yt-border rounded-2xl p-8 w-full max-w-sm shadow-2xl">
-        <h1 className="text-xl font-medium text-yt-text mb-6">Logga in</h1>
+        <h1 className="text-xl font-medium text-yt-text mb-6">Sign in</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm text-yt-muted mb-1">Användarnamn</label>
+            <label className="block text-sm text-yt-muted mb-1">Username</label>
             <input
               type="text"
               value={username}
@@ -58,7 +58,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-yt-muted mb-1">Lösenord</label>
+            <label className="block text-sm text-yt-muted mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -80,12 +80,12 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full bg-yt-red hover:bg-red-700 disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors mt-2"
           >
-            {loading ? "Loggar in..." : "Logga in"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
       </div>
 
-      <p className="text-yt-muted text-xs mt-6">Privat mediaserver — obehörig åtkomst förbjuden</p>
+      <p className="text-yt-muted text-xs mt-6">Private media server — unauthorized access prohibited</p>
     </div>
   );
 }

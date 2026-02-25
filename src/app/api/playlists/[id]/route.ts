@@ -13,7 +13,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   const db = getDb();
   const playlist = db.prepare("SELECT * FROM playlists WHERE id = ?").get(playlistId) as Playlist | undefined;
 
-  if (!playlist) return NextResponse.json({ error: "Hittades inte" }, { status: 404 });
+  if (!playlist) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (playlist.user_id !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const items = db
@@ -39,12 +39,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const db = getDb();
   const playlist = db.prepare("SELECT * FROM playlists WHERE id = ?").get(playlistId) as Playlist | undefined;
 
-  if (!playlist) return NextResponse.json({ error: "Hittades inte" }, { status: 404 });
+  if (!playlist) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (playlist.user_id !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { name, description } = await req.json();
   if (!name || typeof name !== "string" || !name.trim()) {
-    return NextResponse.json({ error: "Namn krävs" }, { status: 400 });
+    return NextResponse.json({ error: "Name is required" }, { status: 400 });
   }
 
   db.prepare("UPDATE playlists SET name = ?, description = ? WHERE id = ?").run(
@@ -69,6 +69,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     .prepare("DELETE FROM playlists WHERE id = ? AND user_id = ?")
     .run(playlistId, userId);
 
-  if (result.changes === 0) return NextResponse.json({ error: "Hittades inte eller forbidden" }, { status: 404 });
+  if (result.changes === 0) return NextResponse.json({ error: "Not found or forbidden" }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

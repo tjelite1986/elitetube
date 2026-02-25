@@ -15,7 +15,7 @@ function getPreviewUrl(item: MediaItem): string | null {
 
 export default function RecentCarousel({
   items,
-  title = "Senast tillagda",
+  title = "Recently added",
 }: {
   items: MediaItem[];
   title?: string;
@@ -37,18 +37,18 @@ export default function RecentCarousel({
       </h2>
 
       <div className="relative group">
-        {/* Vänster pil */}
+        {/* Left arrow */}
         <button
           onClick={() => scroll("left")}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-yt-bg/90 border border-yt-border rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-3 shadow"
-          aria-label="Scrolla vänster"
+          aria-label="Scroll left"
         >
           <svg className="w-4 h-4 text-yt-text" viewBox="0 0 24 24" fill="currentColor">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
           </svg>
         </button>
 
-        {/* Scroll-container */}
+        {/* Scroll container */}
         <div
           ref={scrollRef}
           className="flex gap-3 overflow-x-auto scrollbar-hide pb-1"
@@ -59,11 +59,11 @@ export default function RecentCarousel({
           ))}
         </div>
 
-        {/* Höger pil */}
+        {/* Right arrow */}
         <button
           onClick={() => scroll("right")}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 flex items-center justify-center bg-yt-bg/90 border border-yt-border rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-x-3 shadow"
-          aria-label="Scrolla höger"
+          aria-label="Scroll right"
         >
           <svg className="w-4 h-4 text-yt-text" viewBox="0 0 24 24" fill="currentColor">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
@@ -163,7 +163,7 @@ function CarouselCard({ item }: { item: MediaItem }) {
         )}
       </div>
 
-      {/* Titel */}
+      {/* Title */}
       <p className="text-xs font-medium text-yt-text line-clamp-2 leading-snug">
         {item.title}
       </p>

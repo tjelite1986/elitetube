@@ -18,7 +18,7 @@ export default function Header() {
         <span className="text-yt-text font-bold text-lg hidden sm:inline">EliteTube</span>
       </Link>
 
-      {/* Desktop sökfält */}
+      {/* Desktop search bar */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -30,7 +30,7 @@ export default function Header() {
         <input
           name="q"
           type="text"
-          placeholder="Sök..."
+          placeholder="Search..."
           className="flex-1 bg-yt-surface border border-yt-border rounded-l-full px-4 py-2 text-sm text-yt-text placeholder-yt-muted focus:outline-none focus:border-blue-500"
         />
         <button
@@ -41,16 +41,16 @@ export default function Header() {
         </button>
       </form>
 
-      {/* Spacer på mobil */}
+      {/* Mobile spacer */}
       <div className="flex-1 sm:hidden" />
 
       {/* Ikonknappar */}
       <div className="flex items-center shrink-0">
-        {/* Sök-ikon — bara mobil */}
+        {/* Search icon — mobile only */}
         <Link
           href={isAdult ? "/adult/search" : "/search"}
           className="sm:hidden p-2 text-yt-muted hover:text-yt-text transition-colors rounded-full hover:bg-yt-hover"
-          aria-label="Sök"
+          aria-label="Search"
         >
           <IconSearch className="w-5 h-5" />
         </Link>
@@ -66,11 +66,11 @@ export default function Header() {
           </Link>
         )}
 
-        {/* Logga ut */}
+        {/* Sign out */}
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="p-2 text-yt-muted hover:text-yt-text transition-colors rounded-full hover:bg-yt-hover"
-          aria-label="Logga ut"
+          aria-label="Sign out"
         >
           <IconLogout className="w-5 h-5" />
         </button>

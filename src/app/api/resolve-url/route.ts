@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const url = searchParams.get("url");
   if (!url) {
-    return NextResponse.json({ error: "url krävs" }, { status: 400 });
+    return NextResponse.json({ error: "url is required" }, { status: 400 });
   }
 
   try {
@@ -21,8 +21,8 @@ export async function GET(req: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("ETIMEDOUT") || msg.includes("timed out") || msg.includes("timeout")) {
-      return NextResponse.json({ error: "Timeout vid hämtning av strömlänk" }, { status: 504 });
+      return NextResponse.json({ error: "Timeout while fetching stream URL" }, { status: 504 });
     }
-    return NextResponse.json({ error: msg || "Kunde inte hämta strömlänk" }, { status: 422 });
+    return NextResponse.json({ error: msg || "Could not fetch stream URL" }, { status: 422 });
   }
 }

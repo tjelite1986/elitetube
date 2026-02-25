@@ -22,7 +22,7 @@ export default async function SearchPage({
   const tag = searchParams.tag || "";
   let items: MediaItem[] = [];
 
-  // Hämta alla unika taggar från icke-adult-media
+  // Fetch all unique tags from non-adult media
   const tagRows = db
     .prepare("SELECT tags FROM media WHERE is_adult = 0 AND tags IS NOT NULL AND tags != ''")
     .all() as { tags: string }[];
@@ -69,7 +69,7 @@ export default async function SearchPage({
       <Sidebar />
       <main className="pt-14 pb-14 lg:pl-56 lg:pb-0">
         <div className="px-3 sm:px-6 py-4 max-w-screen-2xl mx-auto">
-          {/* Taggar som kategorichips */}
+          {/* Tags as category chips */}
           {allTags.length > 0 && (
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
               <a
@@ -80,7 +80,7 @@ export default async function SearchPage({
                     : "bg-yt-surface border border-yt-border text-yt-muted hover:text-yt-text hover:bg-yt-hover"
                 }`}
               >
-                Alla
+                All
               </a>
               {allTags.map((t) => (
                 <a
@@ -101,14 +101,14 @@ export default async function SearchPage({
           {q || tag ? (
             <>
               <p className="text-yt-muted text-sm mb-6">
-                {items.length} resultat
-                {q && <> för &quot;<span className="text-yt-text">{q}</span>&quot;</>}
-                {tag && <> i kategorin <span className="text-yt-text">{tag}</span></>}
+                {items.length} results
+                {q && <> for &quot;<span className="text-yt-text">{q}</span>&quot;</>}
+                {tag && <> in category <span className="text-yt-text">{tag}</span></>}
               </p>
               <MediaGrid items={items} />
             </>
           ) : (
-            <p className="text-yt-muted">Skriv något i sökrutan ovan.</p>
+            <p className="text-yt-muted">Type something in the search box above.</p>
           )}
         </div>
       </main>

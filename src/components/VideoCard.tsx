@@ -10,7 +10,7 @@ function getPreviewUrl(item: MediaItem): string | null {
   const type = getMediaType(item);
   if (type === "local") return `/api/stream/${item.id}`;
   if (type === "direct") return item.url ?? null;
-  return null; // youtube / ytdlp → ingen preview
+  return null; // youtube / ytdlp → no preview
 }
 
 export default function VideoCard({ item }: { item: MediaItem }) {
@@ -80,7 +80,7 @@ export default function VideoCard({ item }: { item: MediaItem }) {
           />
         )}
 
-        {/* Varaktighets-badge — döljs vid preview */}
+        {/* Duration badge — hidden during preview */}
         {duration && (
           <span
             className={`absolute bottom-1.5 right-1.5 bg-black/90 text-white text-xs font-medium px-1.5 py-0.5 rounded transition-opacity duration-300 ${
@@ -102,7 +102,7 @@ export default function VideoCard({ item }: { item: MediaItem }) {
           </span>
         )}
 
-        {/* Preview-indikator — liten pulsande prick när buffrar */}
+        {/* Preview indicator — small pulsing dot while buffering */}
         {previewUrl && (
           <span
             className={`absolute bottom-1.5 left-1.5 w-2 h-2 rounded-full bg-white transition-opacity duration-300 ${
@@ -134,14 +134,14 @@ export default function VideoCard({ item }: { item: MediaItem }) {
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const s = Math.floor(diff / 1000);
-  if (s < 60) return "nyss";
+  if (s < 60) return "just now";
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m} min sedan`;
+  if (m < 60) return `${m} min ago`;
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} tim sedan`;
+  if (h < 24) return `${h} h ago`;
   const d = Math.floor(h / 24);
-  if (d < 30) return `${d} d sedan`;
+  if (d < 30) return `${d} d ago`;
   const mo = Math.floor(d / 30);
-  if (mo < 12) return `${mo} mån sedan`;
-  return `${Math.floor(mo / 12)} år sedan`;
+  if (mo < 12) return `${mo} mo ago`;
+  return `${Math.floor(mo / 12)} yr ago`;
 }

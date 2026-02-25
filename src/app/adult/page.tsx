@@ -62,7 +62,7 @@ export default async function AdultPage({
   let allTags: string[] = [];
 
   if (adultUnlocked) {
-    // Hämta alla unika taggar
+    // Fetch all unique tags
     const tagRows = db
       .prepare("SELECT tags FROM media WHERE is_adult = 1 AND tags IS NOT NULL AND tags != ''")
       .all() as { tags: string }[];
@@ -100,18 +100,18 @@ export default async function AdultPage({
         <div className="sm:px-6 py-4 max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-3 mb-4 px-3 sm:px-0">
             <span className="text-2xl font-bold text-yt-text">18+</span>
-            <span className="text-yt-muted text-sm">Endast vuxet innehåll</span>
+            <span className="text-yt-muted text-sm">Adult content only</span>
           </div>
 
           {!pinRow ? (
             <div className="text-center py-16 text-yt-muted text-sm px-3 sm:px-0">
-              Ingen PIN-kod är satt. En administratör måste konfigurera adult-PIN under Admin → Adult-inställningar.
+              No PIN code is set. An administrator must configure the adult PIN under Admin → Adult settings.
             </div>
           ) : !adultUnlocked ? (
             <AdultPinGate />
           ) : (
             <>
-              {/* Taggar som kategorichips */}
+              {/* Tags as category chips */}
               {allTags.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-2 px-3 sm:px-0 scrollbar-hide mb-4">
                   <a
@@ -122,7 +122,7 @@ export default async function AdultPage({
                         : "bg-yt-surface border border-yt-border text-yt-muted hover:text-yt-text hover:bg-yt-hover"
                     }`}
                   >
-                    Alla
+                    All
                   </a>
                   {allTags.map((t) => (
                     <a
@@ -141,15 +141,15 @@ export default async function AdultPage({
               )}
 
               {items.length === 0 ? (
-                <p className="text-yt-muted text-sm px-3 sm:px-0">Inget adult-innehåll finns ännu.</p>
+                <p className="text-yt-muted text-sm px-3 sm:px-0">No adult content available yet.</p>
               ) : (
                 <>
-                  {recentItems.length > 0 && <RecentCarousel items={recentItems} title="Senast tillagda" />}
-                  {trendingItems.length > 0 && <RecentCarousel items={trendingItems} title="Mest sedda" />}
+                  {recentItems.length > 0 && <RecentCarousel items={recentItems} title="Recently added" />}
+                  {trendingItems.length > 0 && <RecentCarousel items={trendingItems} title="Most watched" />}
 
                   {(recentItems.length > 0 || trendingItems.length > 0) && (
                     <div className="flex items-center gap-3 px-3 sm:px-0 pt-4 pb-1">
-                      <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">Alla videor</h2>
+                      <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">All videos</h2>
                       <div className="flex-1 h-px bg-yt-border" />
                     </div>
                   )}

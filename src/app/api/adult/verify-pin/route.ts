@@ -12,19 +12,19 @@ export async function POST(req: NextRequest) {
   const { pin } = body as { pin?: string };
 
   if (!pin) {
-    return NextResponse.json({ error: "PIN saknas" }, { status: 400 });
+    return NextResponse.json({ error: "PIN is required" }, { status: 400 });
   }
 
   const db = getDb();
   const row = db.prepare("SELECT value FROM settings WHERE key = 'adult_pin_hash'").get() as { value: string } | undefined;
 
   if (!row) {
-    return NextResponse.json({ error: "Ingen PIN är satt" }, { status: 400 });
+    return NextResponse.json({ error: "No PIN has been set" }, { status: 400 });
   }
 
   const ok = await bcrypt.compare(pin, row.value);
   if (!ok) {
-    return NextResponse.json({ error: "Fel PIN" }, { status: 403 });
+    return NextResponse.json({ error: "Incorrect PIN" }, { status: 403 });
   }
 
   const response = NextResponse.json({ ok: true });
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    // session-cookie (ingen maxAge)
+    // session cookie (no maxAge)
   });
   return response;
 }

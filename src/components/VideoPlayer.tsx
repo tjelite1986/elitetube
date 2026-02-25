@@ -16,19 +16,19 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
       .then((r) => r.json())
       .then((data) => {
         if (data.url) {
-          // Bygg proxy-URL så webbläsaren aldrig träffar CDN direkt (löser CORS/Referer-problem)
+          // Build proxy URL so the browser never hits the CDN directly (fixes CORS/Referer issues)
           let referer = "";
           try {
             const parsed = new URL(item.url!);
             referer = `${parsed.protocol}//${parsed.hostname}/`;
-          } catch { /* ogiltigt URL */ }
+          } catch { /* invalid URL */ }
           const proxy = `/api/proxy-stream?url=${encodeURIComponent(data.url)}&referer=${encodeURIComponent(referer)}`;
           setResolvedUrl(proxy);
         } else {
-          setResolveError(data.error || "Kunde inte hämta strömlänk");
+          setResolveError(data.error || "Could not fetch stream URL");
         }
       })
-      .catch(() => setResolveError("Nätverksfel vid hämtning av strömlänk"))
+      .catch(() => setResolveError("Network error while fetching stream URL"))
       .finally(() => setResolving(false));
   };
 
@@ -41,7 +41,7 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
     return (
       <div className="w-full aspect-video bg-black rounded-xl flex flex-col items-center justify-center gap-3">
         <div className="w-8 h-8 border-4 border-yt-muted border-t-white rounded-full animate-spin" />
-        <p className="text-yt-muted text-sm">Hämtar strömlänken...</p>
+        <p className="text-yt-muted text-sm">Fetching stream URL...</p>
       </div>
     );
   }
@@ -54,7 +54,7 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
           onClick={resolve}
           className="bg-yt-surface border border-yt-border text-yt-text px-4 py-2 rounded-lg text-sm hover:bg-yt-surface2 transition-colors"
         >
-          Försök igen
+          Try again
         </button>
       </div>
     );
@@ -63,7 +63,7 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
   return (
     <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
       <video controls autoPlay className="w-full h-full" src={resolvedUrl!}>
-        Din webbläsare stöder inte video-elementet.
+        Your browser does not support the video element.
       </video>
     </div>
   );
@@ -78,7 +78,7 @@ export default function VideoPlayer({ item }: { item: MediaItem }) {
 
   if (mtype === "youtube") {
     const ytId = item.url ? extractYouTubeId(item.url) : null;
-    if (!ytId) return <div className="text-yt-muted">Ogiltigt YouTube-ID</div>;
+    if (!ytId) return <div className="text-yt-muted">Invalid YouTube ID</div>;
     return (
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
         <iframe
@@ -104,16 +104,16 @@ export default function VideoPlayer({ item }: { item: MediaItem }) {
     const src = mtype === "direct" ? item.url! : `/api/stream/${item.id}`;
     return (
       <div className="w-full bg-yt-surface rounded-xl p-6">
-        <p className="text-yt-muted text-sm mb-3 text-center">Ljud</p>
+        <p className="text-yt-muted text-sm mb-3 text-center">Audio</p>
         <audio controls className="w-full">
           <source src={src} />
-          Din webbläsare stöder inte audio-elementet.
+          Your browser does not support the audio element.
         </audio>
       </div>
     );
   }
 
-  // Video (lokal eller direktlänk)
+  // Video (local or direct link)
   const src = mtype === "direct" ? item.url! : `/api/stream/${item.id}`;
   return (
     <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
@@ -123,7 +123,7 @@ export default function VideoPlayer({ item }: { item: MediaItem }) {
         className="w-full h-full"
         src={src}
       >
-        Din webbläsare stöder inte video-elementet.
+        Your browser does not support the video element.
       </video>
     </div>
   );

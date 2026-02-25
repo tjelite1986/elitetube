@@ -25,7 +25,7 @@ export default function AdultPinGate() {
       router.refresh();
     } else {
       const data = await res.json();
-      setError(data.error || "Fel PIN");
+      setError(data.error || "Wrong PIN");
       setPin("");
     }
   }
@@ -42,12 +42,12 @@ export default function AdultPinGate() {
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
       <div className="bg-yt-surface border border-yt-border rounded-2xl p-8 w-full max-w-sm text-center">
         <div className="text-4xl mb-4">🔞</div>
-        <h2 className="text-xl font-bold text-yt-text mb-1">Åldersverifiering</h2>
+        <h2 className="text-xl font-bold text-yt-text mb-1">Age verification</h2>
         <p className="text-sm text-yt-muted mb-6">
-          Det här innehållet är märkt som 18+. Ange PIN-koden för att fortsätta.
+          This content is marked as 18+. Enter the PIN code to continue.
         </p>
 
-        {/* PIN-visning */}
+        {/* PIN display */}
         <div className="flex justify-center gap-3 mb-6">
           {Array.from({ length: Math.max(pin.length, 4) }).map((_, i) => (
             <div
@@ -59,7 +59,7 @@ export default function AdultPinGate() {
           ))}
         </div>
 
-        {/* Nummerpad */}
+        {/* Number pad */}
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-3 gap-2 mb-4">
             {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((d) => (

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { url } = body;
   if (!url || typeof url !== "string") {
-    return NextResponse.json({ error: "url krävs" }, { status: 400 });
+    return NextResponse.json({ error: "url is required" }, { status: 400 });
   }
 
   try {
@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("ETIMEDOUT") || msg.includes("timed out") || msg.includes("timeout")) {
-      return NextResponse.json({ error: "Timeout vid hämtning av metadata" }, { status: 504 });
+      return NextResponse.json({ error: "Timeout while fetching metadata" }, { status: 504 });
     }
-    return NextResponse.json({ error: msg || "Kunde inte hämta metadata" }, { status: 422 });
+    return NextResponse.json({ error: msg || "Could not fetch metadata" }, { status: 422 });
   }
 }

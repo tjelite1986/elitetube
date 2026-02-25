@@ -37,7 +37,7 @@ export default function AutoNextController({ nextUrl, mediaType }: Props) {
     navigated.current = false;
 
     if (mediaType === "youtube") {
-      // YouTube IFrame API — väntar tills iframen är redo
+      // YouTube IFrame API — waits until the iframe is ready
       const setupYT = () => {
         const iframe = document.querySelector("iframe");
         if (!iframe) return;
@@ -63,7 +63,7 @@ export default function AutoNextController({ nextUrl, mediaType }: Props) {
         }
       }
     } else {
-      // Lokal video / ljud
+      // Local video / audio
       const media = document.querySelector("video, audio");
       if (!media) return;
 

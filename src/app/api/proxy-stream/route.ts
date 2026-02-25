@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   const cdnUrl = req.nextUrl.searchParams.get("url");
   const referer = req.nextUrl.searchParams.get("referer") || "";
-  if (!cdnUrl) return new Response("url krävs", { status: 400 });
+  if (!cdnUrl) return new Response("url is required", { status: 400 });
 
   const fetchHeaders: Record<string, string> = {
     "User-Agent":
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   };
   if (referer) fetchHeaders["Referer"] = referer;
 
-  // Vidarebefordra Range-header för seeking-stöd
+  // Forward Range header for seeking support
   const range = req.headers.get("range");
   if (range) fetchHeaders["Range"] = range;
 
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
   try {
     upstream = await fetch(cdnUrl, { headers: fetchHeaders });
   } catch {
-    return new Response("Kunde inte ansluta till CDN", { status: 502 });
+    return new Response("Could not connect to CDN", { status: 502 });
   }
 
   const responseHeaders: Record<string, string> = {

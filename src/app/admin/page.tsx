@@ -24,58 +24,58 @@ export default async function AdminPage() {
       <main className="pt-14">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">Admin-panel</h1>
+            <h1 className="text-2xl font-bold">Admin panel</h1>
             <Link href="/" className="text-sm text-yt-muted hover:text-yt-text transition-colors">
-              ← Tillbaka till start
+              ← Back to home
             </Link>
           </div>
 
-          {/* Statistik */}
+          {/* Statistics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
             {[
               { label: "Media", value: mediaCount, icon: "🎬" },
-              { label: "Källor", value: sourceCount, icon: "📂" },
-              { label: "Användare", value: userCount, icon: "👤" },
-              { label: "Visningar", value: totalViews, icon: "👁" },
+              { label: "Sources", value: sourceCount, icon: "📂" },
+              { label: "Users", value: userCount, icon: "👤" },
+              { label: "Views", value: totalViews, icon: "👁" },
             ].map((s) => (
               <div key={s.label} className="bg-yt-surface border border-yt-border rounded-xl p-4 text-center">
                 <div className="text-2xl mb-1">{s.icon}</div>
-                <div className="text-2xl font-bold">{s.value.toLocaleString("sv-SE")}</div>
+                <div className="text-2xl font-bold">{s.value.toLocaleString("en-US")}</div>
                 <div className="text-xs text-yt-muted mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Snabblänkar */}
+          {/* Quick links */}
           <div className="grid sm:grid-cols-2 gap-4">
             <AdminCard
               href="/admin/media"
-              title="Hantera media"
-              description="Lägg till, redigera och ta bort media"
+              title="Manage media"
+              description="Add, edit and delete media"
               icon="🎬"
             />
             <AdminCard
               href="/admin/import-playlist"
-              title="Importera spellista"
-              description="Importera alla videos från en YouTube-spellista på en gång"
+              title="Import playlist"
+              description="Import all videos from a YouTube playlist at once"
               icon="▶"
             />
             <AdminCard
               href="/admin/sources"
-              title="Hantera källor"
-              description="Konfigurera lokala sökvägar, SMB och externa URL:er"
+              title="Manage sources"
+              description="Configure local paths, SMB and external URLs"
               icon="📂"
             />
             <AdminCard
               href="/admin/adult-pin"
-              title="Adult-inställningar"
-              description="Sätt eller uppdatera PIN-koden för 18+-innehåll"
+              title="Adult settings"
+              description="Set or update the PIN code for 18+ content"
               icon="🔞"
             />
             <AdminCard
               href="/admin/tags"
-              title="Hantera adult-taggar"
-              description="Byt namn eller ta bort taggar som visas som kategorier på 18+-sidan"
+              title="Manage adult tags"
+              description="Rename or delete tags shown as categories on the 18+ page"
               icon="#"
             />
           </div>

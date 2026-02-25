@@ -11,7 +11,7 @@ function requireAdmin(session: any) {
   return null;
 }
 
-// GET — lista alla unika taggar i adult-media med räknare
+// GET — list all unique tags in adult media with counts
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   const err = requireAdmin(session);
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
   return NextResponse.json(result);
 }
 
-// PUT — byt namn på en tagg i alla adult-media
+// PUT — rename a tag across all adult media
 export async function PUT(req: Request) {
   const session = await getServerSession(authOptions);
   const err = requireAdmin(session);
@@ -44,7 +44,7 @@ export async function PUT(req: Request) {
 
   const { oldName, newName } = (await req.json()) as { oldName: string; newName: string };
   if (!oldName?.trim() || !newName?.trim())
-    return NextResponse.json({ error: "Ogiltigt namn" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid name" }, { status: 400 });
 
   const db = getDb();
   const rows = db
@@ -64,7 +64,7 @@ export async function PUT(req: Request) {
   return NextResponse.json({ updated: rows.length });
 }
 
-// DELETE — ta bort en tagg från alla adult-media
+// DELETE — remove a tag from all adult media
 export async function DELETE(req: Request) {
   const session = await getServerSession(authOptions);
   const err = requireAdmin(session);
@@ -72,7 +72,7 @@ export async function DELETE(req: Request) {
 
   const { name } = (await req.json()) as { name: string };
   if (!name?.trim())
-    return NextResponse.json({ error: "Inget taggnamn" }, { status: 400 });
+    return NextResponse.json({ error: "No tag name provided" }, { status: 400 });
 
   const db = getDb();
   const rows = db

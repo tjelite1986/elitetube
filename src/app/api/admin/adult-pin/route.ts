@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const { pin } = body as { pin?: string };
 
   if (!pin || pin.length < 4) {
-    return NextResponse.json({ error: "PIN måste vara minst 4 tecken" }, { status: 400 });
+    return NextResponse.json({ error: "PIN must be at least 4 characters" }, { status: 400 });
   }
 
   const hash = await bcrypt.hash(pin, 12);

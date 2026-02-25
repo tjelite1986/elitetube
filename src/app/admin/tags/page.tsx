@@ -33,14 +33,14 @@ export default function TagsAdminPage() {
     setBusy(false);
     if (res.ok) {
       const { updated } = await res.json();
-      setFeedback(`Bytte namn på "${oldName}" → "${editName.trim()}" (${updated} media)`);
+      setFeedback(`Renamed "${oldName}" → "${editName.trim()}" (${updated} media)`);
       setEditTag(null);
       load();
     }
   }
 
   async function handleDelete(name: string) {
-    if (!confirm(`Ta bort taggen "${name}" från alla adult-media?`)) return;
+    if (!confirm(`Remove tag "${name}" from all adult media?`)) return;
     setBusy(true);
     const res = await fetch("/api/admin/tags", {
       method: "DELETE",
@@ -50,7 +50,7 @@ export default function TagsAdminPage() {
     setBusy(false);
     if (res.ok) {
       const { updated } = await res.json();
-      setFeedback(`Tog bort "${name}" från ${updated} media`);
+      setFeedback(`Removed "${name}" from ${updated} media`);
       load();
     }
   }
@@ -60,11 +60,11 @@ export default function TagsAdminPage() {
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin" className="text-yt-muted hover:text-yt-text text-sm">← Admin</Link>
-          <h1 className="text-2xl font-bold">Hantera adult-taggar</h1>
+          <h1 className="text-2xl font-bold">Manage adult tags</h1>
         </div>
 
         <p className="text-sm text-yt-muted mb-6">
-          Taggar från adult-media visas som filterkategorier på 18+-sidan. Byt namn eller ta bort taggar du inte vill ha.
+          Tags from adult media are shown as filter categories on the 18+ page. Rename or delete tags you do not want.
         </p>
 
         {feedback && (
@@ -74,9 +74,9 @@ export default function TagsAdminPage() {
         )}
 
         {loading ? (
-          <p className="text-yt-muted text-sm">Laddar...</p>
+          <p className="text-yt-muted text-sm">Loading...</p>
         ) : tags.length === 0 ? (
-          <p className="text-yt-muted text-sm">Inga taggar hittades i adult-media.</p>
+          <p className="text-yt-muted text-sm">No tags found in adult media.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {tags.map((tag) => (
@@ -101,13 +101,13 @@ export default function TagsAdminPage() {
                       disabled={busy}
                       className="text-xs bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-3 py-1.5 rounded-lg transition-colors"
                     >
-                      Spara
+                      Save
                     </button>
                     <button
                       onClick={() => setEditTag(null)}
                       className="text-xs text-yt-muted hover:text-yt-text transition-colors"
                     >
-                      Avbryt
+                      Cancel
                     </button>
                   </>
                 ) : (
@@ -120,14 +120,14 @@ export default function TagsAdminPage() {
                       onClick={() => { setEditTag(tag.name); setEditName(tag.name); setFeedback(""); }}
                       className="text-xs text-yt-muted hover:text-blue-400 transition-colors"
                     >
-                      Byt namn
+                      Rename
                     </button>
                     <button
                       onClick={() => { setFeedback(""); handleDelete(tag.name); }}
                       disabled={busy}
                       className="text-xs text-yt-muted hover:text-red-400 disabled:opacity-50 transition-colors"
                     >
-                      Ta bort
+                      Delete
                     </button>
                   </>
                 )}

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   const { name, type, path, description } = body;
 
   if (!name || !type) {
-    return NextResponse.json({ error: "name och type krävs" }, { status: 400 });
+    return NextResponse.json({ error: "name and type are required" }, { status: 400 });
   }
 
   const db = getDb();
@@ -42,7 +42,7 @@ export async function DELETE(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  if (!id) return NextResponse.json({ error: "id saknas" }, { status: 400 });
+  if (!id) return NextResponse.json({ error: "id is missing" }, { status: 400 });
 
   const db = getDb();
   db.prepare("DELETE FROM sources WHERE id = ?").run(parseInt(id));

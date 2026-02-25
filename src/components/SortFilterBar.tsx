@@ -6,13 +6,13 @@ type Props = {
 };
 
 const SORTS = [
-  { key: "newest", label: "Senaste" },
-  { key: "views", label: "Mest sedda" },
-  { key: "duration", label: "Längst" },
+  { key: "newest", label: "Latest" },
+  { key: "views", label: "Most watched" },
+  { key: "duration", label: "Longest" },
 ];
 
 const LENGTHS = [
-  { key: "all", label: "Alla" },
+  { key: "all", label: "All" },
   { key: "short", label: "< 10 min" },
   { key: "medium", label: "10–20 min" },
   { key: "long", label: "> 20 min" },
@@ -30,7 +30,7 @@ export default function SortFilterBar({ sort, length, category, basePath }: Prop
 
   return (
     <div className="flex flex-col gap-2 px-3 sm:px-6 pt-1 pb-2">
-      {/* Sortering */}
+      {/* Sort */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide">
         {SORTS.map((s) => (
           <a
@@ -47,7 +47,7 @@ export default function SortFilterBar({ sort, length, category, basePath }: Prop
         ))}
       </div>
 
-      {/* Längdfilter */}
+      {/* Length filter */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide">
         {LENGTHS.map((l) => (
           <a

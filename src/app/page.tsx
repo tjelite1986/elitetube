@@ -71,19 +71,19 @@ export default async function HomePage({
       <Sidebar />
       <main className="pt-14 pb-14 lg:pl-56 lg:pb-0">
 
-        {/* Karuseller — visas bara utan filter */}
-        {recentItems.length > 0 && <RecentCarousel items={recentItems} title="Senast tillagda" />}
-        {trendingItems.length > 0 && <RecentCarousel items={trendingItems} title="Mest sedda" />}
+        {/* Carousels — only shown without filters */}
+        {recentItems.length > 0 && <RecentCarousel items={recentItems} title="Recently added" />}
+        {trendingItems.length > 0 && <RecentCarousel items={trendingItems} title="Most watched" />}
 
         {/* Divider */}
         {(recentItems.length > 0 || trendingItems.length > 0) && (
           <div className="flex items-center gap-3 px-3 sm:px-6 pt-4 pb-1">
-            <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">Alla videor</h2>
+            <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">All videos</h2>
             <div className="flex-1 h-px bg-yt-border" />
           </div>
         )}
 
-        {/* Kategori-chips */}
+        {/* Category chips */}
         {categories.length > 0 && (
           <div className="flex gap-2 overflow-x-auto px-3 sm:px-6 py-3 scrollbar-hide">
             <a
@@ -94,7 +94,7 @@ export default async function HomePage({
                   : "bg-yt-surface text-yt-text hover:bg-yt-hover"
               }`}
             >
-              Allt
+              All
             </a>
             {categories.map(({ category }) => (
               <a
@@ -112,7 +112,7 @@ export default async function HomePage({
           </div>
         )}
 
-        {/* Sort + längdfilter */}
+        {/* Sort + length filter */}
         <SortFilterBar sort={sort} length={length} category={searchParams.category} basePath="/" />
 
         <div className="sm:px-6 py-2 sm:py-4 max-w-screen-2xl mx-auto">

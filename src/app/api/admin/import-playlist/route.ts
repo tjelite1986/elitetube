@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     is_adult?: boolean;
   };
 
-  if (!url) return NextResponse.json({ error: "URL saknas" }, { status: 400 });
+  if (!url) return NextResponse.json({ error: "URL is required" }, { status: 400 });
 
   let stdout: string;
   try {
@@ -33,13 +33,13 @@ export async function POST(req: NextRequest) {
     );
     stdout = result.stdout;
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Okänt fel";
-    return NextResponse.json({ error: `yt-dlp fel: ${msg}` }, { status: 500 });
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: `yt-dlp error: ${msg}` }, { status: 500 });
   }
 
   const lines = stdout.trim().split("\n").filter(Boolean);
   if (lines.length === 0) {
-    return NextResponse.json({ error: "Inga videos hittades i spellistan" }, { status: 400 });
+    return NextResponse.json({ error: "No videos found in the playlist" }, { status: 400 });
   }
 
   const db = getDb();
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
       try {
         const entry = JSON.parse(line);
 
-        // Bygg video-URL
+        // Build video URL
         let videoUrl: string | null = null;
         if (entry.url && entry.url.startsWith("http")) {
           videoUrl = entry.url;
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         }
 
         if (!videoUrl) {
-          errors.push(`Ingen URL för: ${entry.title || entry.id || "okänd"}`);
+          errors.push(`No URL for: ${entry.title || entry.id || "unknown"}`);
           continue;
         }
 
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
         insert.run(title, videoUrl, thumbnail, duration, category || null, needsYtdlp, is_adult ? 1 : 0);
         imported++;
       } catch {
-        errors.push("Parse-fel på en post");
+        errors.push("Parse error on one entry");
       }
     }
   });

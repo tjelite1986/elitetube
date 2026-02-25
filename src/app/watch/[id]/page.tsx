@@ -28,11 +28,11 @@ export default async function WatchPage({
   const item = db.prepare("SELECT * FROM media WHERE id = ?").get(parseInt(params.id)) as MediaItem | undefined;
   if (!item) notFound();
 
-  // Öka visningarna
+  // Increment view count
   db.prepare("UPDATE media SET views = views + 1 WHERE id = ?").run(parseInt(params.id));
   item.views += 1;
 
-  // Playlist-kontext
+  // Playlist context
   const playlistId = searchParams.playlist ? parseInt(searchParams.playlist) : null;
   const currentIndex = searchParams.index ? parseInt(searchParams.index) : null;
   let playlistItems: PlaylistItemWithMedia[] = [];
@@ -55,14 +55,14 @@ export default async function WatchPage({
     }
   }
 
-  // Kontrollera adult-lås
+  // Check adult lock
   const cookieStore = cookies();
   const adultUnlocked = cookieStore.get("adult_unlocked")?.value === "1";
   const isAdultLocked = item.is_adult === 1 && !adultUnlocked;
 
   const mediaType = getMediaType(item);
 
-  // Relaterade — matchar kategori + adult-status, sorterade efter visningar
+  // Related — matches category + adult status, sorted by views
   const related = db
     .prepare(
       `SELECT * FROM media
@@ -83,7 +83,7 @@ export default async function WatchPage({
       <Header />
       <main className="pt-14">
         <div className="max-w-screen-2xl mx-auto px-4 py-6 flex flex-col xl:flex-row gap-6">
-          {/* Vänster — spelare + info */}
+          {/* Left — player + info */}
           <div className="flex-1 min-w-0">
             {isAdultLocked ? (
               <AdultPinGate />
@@ -94,7 +94,7 @@ export default async function WatchPage({
             <div className="mt-4">
               <h1 className="text-xl font-bold text-yt-text leading-snug">{item.title}</h1>
 
-              {/* Statistik-rad */}
+              {/* Stats row */}
               <div className="flex items-center gap-3 mt-2 text-sm text-yt-muted flex-wrap">
                 {item.category && (
                   <a
@@ -113,7 +113,7 @@ export default async function WatchPage({
                 )}
               </div>
 
-              {/* Like-knappar + playlist */}
+              {/* Like buttons + playlist */}
               <div className="flex items-center gap-3 mt-3 flex-wrap">
                 <LikeButtons
                   mediaId={item.id}
@@ -123,7 +123,7 @@ export default async function WatchPage({
                 <AddToPlaylistButton mediaId={item.id} />
               </div>
 
-              {/* Taggar */}
+              {/* Tags */}
               {item.tags && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {item.tags.split(",").map((tag) => tag.trim()).filter(Boolean).map((tag) => (
@@ -146,10 +146,10 @@ export default async function WatchPage({
             </div>
           </div>
 
-          {/* Höger — relaterade */}
+          {/* Right — related */}
           {related.length > 0 && (
             <aside className="xl:w-96 shrink-0">
-              <p className="text-sm font-medium text-yt-muted mb-4">Relaterade</p>
+              <p className="text-sm font-medium text-yt-muted mb-4">Related</p>
               <div className="flex flex-col gap-3">
                 {related.slice(0, 10).map((r) => (
                   <RelatedCard key={r.id} item={r} />

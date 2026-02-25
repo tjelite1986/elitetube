@@ -98,7 +98,7 @@ export default function MediaAdminPage() {
       }));
     } else {
       const d = await res.json();
-      setMetaError(d.error || "Kunde inte hämta metadata");
+      setMetaError(d.error || "Could not fetch metadata");
     }
   }
 
@@ -152,7 +152,7 @@ export default function MediaAdminPage() {
       }));
     } else {
       const d = await res.json();
-      setEditMetaError(d.error || "Kunde inte hämta metadata");
+      setEditMetaError(d.error || "Could not fetch metadata");
     }
   }
 
@@ -238,7 +238,7 @@ export default function MediaAdminPage() {
             }),
           });
         }
-      } catch { /* fortsätt vid fel */ }
+      } catch { /* continue on error */ }
       done++;
       setBulkProgress(`${done} / ${targets.length}`);
     }
@@ -249,7 +249,7 @@ export default function MediaAdminPage() {
   }
 
   async function handleBulkDelete() {
-    if (!confirm(`Ta bort ${selectedIds.size} markerade objekt? Detta går inte att ångra.`)) return;
+    if (!confirm(`Delete ${selectedIds.size} selected items? This cannot be undone.`)) return;
     await Promise.all(
       Array.from(selectedIds).map((id) => fetch(`/api/media/${id}`, { method: "DELETE" }))
     );
@@ -258,7 +258,7 @@ export default function MediaAdminPage() {
   }
 
   async function handleDelete(id: number) {
-    if (!confirm("Ta bort detta media?")) return;
+    if (!confirm("Delete this media item?")) return;
     await fetch(`/api/media/${id}`, { method: "DELETE" });
     setItems((prev) => prev.filter((i) => i.id !== id));
   }
@@ -275,41 +275,41 @@ export default function MediaAdminPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin" className="text-yt-muted hover:text-yt-text text-sm">← Admin</Link>
-          <h1 className="text-2xl font-bold">Hantera media</h1>
+          <h1 className="text-2xl font-bold">Manage media</h1>
         </div>
 
-        {/* Lägg till media */}
+        {/* Add media */}
         <div className="bg-yt-surface border border-yt-border rounded-xl p-6 mb-8">
-          <h2 className="font-semibold mb-4">Lägg till media</h2>
+          <h2 className="font-semibold mb-4">Add media</h2>
           <form onSubmit={handleAdd} className="flex flex-col gap-3">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Titel *</label>
+                <label className="text-xs text-yt-muted block mb-1">Title *</label>
                 <input
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   required
-                  placeholder="Min video"
+                  placeholder="My video"
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Typ *</label>
+                <label className="text-xs text-yt-muted block mb-1">Type *</label>
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="video">Video</option>
-                  <option value="audio">Ljud</option>
-                  <option value="image">Bild</option>
+                  <option value="audio">Audio</option>
+                  <option value="image">Image</option>
                 </select>
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-yt-muted block mb-1">URL (YouTube, Vimeo, Rumble m.fl.)</label>
+                <label className="text-xs text-yt-muted block mb-1">URL (YouTube, Vimeo, Rumble etc.)</label>
                 <div className="flex gap-2">
                   <input
                     value={form.url}
@@ -323,18 +323,18 @@ export default function MediaAdminPage() {
                     disabled={fetchingMeta || !form.url}
                     className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors"
                   >
-                    {fetchingMeta ? "Hämtar..." : "Hämta info"}
+                    {fetchingMeta ? "Fetching..." : "Fetch info"}
                   </button>
                 </div>
                 {form.needs_ytdlp && (
-                  <p className="text-green-400 text-xs mt-1">Metadata hämtad — spelas via yt-dlp</p>
+                  <p className="text-green-400 text-xs mt-1">Metadata fetched — played via yt-dlp</p>
                 )}
                 {metaError && (
                   <p className="text-red-400 text-xs mt-1">{metaError}</p>
                 )}
               </div>
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Lokal fil (relativ sökväg)</label>
+                <label className="text-xs text-yt-muted block mb-1">Local file (relative path)</label>
                 <input
                   value={form.filename}
                   onChange={(e) => setForm({ ...form, filename: e.target.value })}
@@ -346,29 +346,29 @@ export default function MediaAdminPage() {
 
             <div className="grid sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Källa</label>
+                <label className="text-xs text-yt-muted block mb-1">Source</label>
                 <select
                   value={form.source_id}
                   onChange={(e) => setForm({ ...form, source_id: e.target.value })}
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 >
-                  <option value="">— ingen —</option>
+                  <option value="">— none —</option>
                   {sources.map((s) => (
                     <option key={s.id} value={s.id}>{s.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Kategori</label>
+                <label className="text-xs text-yt-muted block mb-1">Category</label>
                 <input
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  placeholder="Film, Musik..."
+                  placeholder="Movies, Music..."
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Längd (sekunder)</label>
+                <label className="text-xs text-yt-muted block mb-1">Duration (seconds)</label>
                 <input
                   type="number"
                   value={form.duration}
@@ -380,18 +380,18 @@ export default function MediaAdminPage() {
             </div>
 
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Taggar (kommaseparerade)</label>
+              <label className="text-xs text-yt-muted block mb-1">Tags (comma-separated)</label>
               <input
                 value={form.tags}
                 onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                placeholder="tagg1, tagg2, tagg3"
+                placeholder="tag1, tag2, tag3"
                 className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
-              <p className="text-xs text-yt-muted mt-1">Fylls i automatiskt vid &quot;Hämta info&quot;</p>
+              <p className="text-xs text-yt-muted mt-1">Auto-filled when using &quot;Fetch info&quot;</p>
             </div>
 
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Thumbnail-URL (auto för YouTube)</label>
+              <label className="text-xs text-yt-muted block mb-1">Thumbnail URL (auto for YouTube)</label>
               <input
                 value={form.thumbnail_url}
                 onChange={(e) => setForm({ ...form, thumbnail_url: e.target.value })}
@@ -401,12 +401,12 @@ export default function MediaAdminPage() {
             </div>
 
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Beskrivning</label>
+              <label className="text-xs text-yt-muted block mb-1">Description</label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 rows={2}
-                placeholder="Valfri beskrivning..."
+                placeholder="Optional description..."
                 className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
               />
             </div>
@@ -419,8 +419,8 @@ export default function MediaAdminPage() {
                 className="w-4 h-4 accent-red-600"
               />
               <span className="text-sm text-yt-text">
-                Adult-innehåll (18+)
-                <span className="ml-1 text-xs text-yt-muted">— kräver PIN för uppspelning</span>
+                Adult content (18+)
+                <span className="ml-1 text-xs text-yt-muted">— requires PIN to play</span>
               </span>
             </label>
 
@@ -430,22 +430,22 @@ export default function MediaAdminPage() {
               disabled={loading}
               className="bg-yt-red hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium self-start transition-colors"
             >
-              {loading ? "Sparar..." : "Lägg till media"}
+              {loading ? "Saving..." : "Add media"}
             </button>
           </form>
         </div>
 
-        {/* Sök + lista */}
+        {/* Search + list */}
         <div className="mb-3">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Filtrera media..."
+            placeholder="Filter media..."
             className="w-full bg-yt-surface border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
         </div>
 
-        {/* Bulk-kontroller */}
+        {/* Bulk controls */}
         {filtered.length > 0 && (
           <div className="flex items-center gap-3 mb-3 flex-wrap">
             <button
@@ -458,7 +458,7 @@ export default function MediaAdminPage() {
               }}
               className="text-xs text-yt-muted hover:text-yt-text transition-colors"
             >
-              {selectedIds.size === filtered.length ? "Avmarkera alla" : "Markera alla"}
+              {selectedIds.size === filtered.length ? "Deselect all" : "Select all"}
             </button>
             <button
               onClick={() => {
@@ -467,10 +467,10 @@ export default function MediaAdminPage() {
               }}
               className="text-xs text-yt-muted hover:text-yt-text transition-colors"
             >
-              Markera saknar info ({filtered.filter((i) => !i.thumbnail_url).length})
+              Select missing info ({filtered.filter((i) => !i.thumbnail_url).length})
             </button>
             {selectedIds.size > 0 && !bulkFetching && (
-              <span className="text-xs text-yt-muted">{selectedIds.size} markerade</span>
+              <span className="text-xs text-yt-muted">{selectedIds.size} selected</span>
             )}
             {selectedIds.size > 0 && (
               <button
@@ -479,8 +479,8 @@ export default function MediaAdminPage() {
                 className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
               >
                 {bulkFetching
-                  ? `Hämtar info... ${bulkProgress}`
-                  : `Hämta info för ${selectedIds.size}`}
+                  ? `Fetching info... ${bulkProgress}`
+                  : `Fetch info for ${selectedIds.size}`}
               </button>
             )}
             {selectedIds.size > 0 && !bulkFetching && (
@@ -488,7 +488,7 @@ export default function MediaAdminPage() {
                 onClick={handleBulkDelete}
                 className="bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
               >
-                Radera {selectedIds.size}
+                Delete {selectedIds.size}
               </button>
             )}
           </div>
@@ -496,7 +496,7 @@ export default function MediaAdminPage() {
 
         <div className="flex flex-col gap-2">
           {filtered.length === 0 ? (
-            <p className="text-yt-muted text-sm">Ingen media.</p>
+            <p className="text-yt-muted text-sm">No media found.</p>
           ) : (
             filtered.map((item) => (
               <div
@@ -527,7 +527,7 @@ export default function MediaAdminPage() {
                   </div>
                   <p className="text-xs text-yt-muted mt-0.5">
                     {item.category && <span className="mr-2">{item.category}</span>}
-                    <span>{item.views} visningar</span>
+                    <span>{item.views} views</span>
                     {item.url && <span className="ml-2 font-mono truncate hidden sm:inline">{item.url.slice(0, 50)}...</span>}
                     {item.filename && <span className="ml-2 font-mono truncate hidden sm:inline">{item.filename}</span>}
                   </p>
@@ -537,19 +537,19 @@ export default function MediaAdminPage() {
                     href={`/watch/${item.id}`}
                     className="text-xs text-yt-muted hover:text-yt-text transition-colors"
                   >
-                    Spela
+                    Play
                   </Link>
                   <button
                     onClick={() => openEdit(item)}
                     className="text-xs text-yt-muted hover:text-blue-400 transition-colors"
                   >
-                    Redigera
+                    Edit
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
                     className="text-xs text-yt-muted hover:text-red-400 transition-colors"
                   >
-                    Ta bort
+                    Delete
                   </button>
                 </div>
               </div>
@@ -558,12 +558,12 @@ export default function MediaAdminPage() {
         </div>
       </div>
 
-      {/* Redigera-modal */}
+      {/* Edit modal */}
       {editItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
           <div className="bg-yt-surface border border-yt-border rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-semibold text-lg">Redigera media</h2>
+              <h2 className="font-semibold text-lg">Edit media</h2>
               <button
                 onClick={() => setEditItem(null)}
                 className="text-yt-muted hover:text-yt-text text-xl leading-none"
@@ -574,7 +574,7 @@ export default function MediaAdminPage() {
 
             <form onSubmit={handleEditSave} className="flex flex-col gap-3">
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Titel *</label>
+                <label className="text-xs text-yt-muted block mb-1">Title *</label>
                 <input
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
@@ -584,15 +584,15 @@ export default function MediaAdminPage() {
               </div>
 
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Typ *</label>
+                <label className="text-xs text-yt-muted block mb-1">Type *</label>
                 <select
                   value={editForm.type}
                   onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 >
                   <option value="video">Video</option>
-                  <option value="audio">Ljud</option>
-                  <option value="image">Bild</option>
+                  <option value="audio">Audio</option>
+                  <option value="image">Image</option>
                 </select>
               </div>
 
@@ -611,7 +611,7 @@ export default function MediaAdminPage() {
                     disabled={editFetchingMeta || !editForm.url}
                     className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors"
                   >
-                    {editFetchingMeta ? "Hämtar..." : "Hämta info"}
+                    {editFetchingMeta ? "Fetching..." : "Fetch info"}
                   </button>
                 </div>
                 {editMetaError && (
@@ -620,7 +620,7 @@ export default function MediaAdminPage() {
               </div>
 
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Lokal fil</label>
+                <label className="text-xs text-yt-muted block mb-1">Local file</label>
                 <input
                   value={editForm.filename}
                   onChange={(e) => setEditForm({ ...editForm, filename: e.target.value })}
@@ -631,16 +631,16 @@ export default function MediaAdminPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-yt-muted block mb-1">Kategori</label>
+                  <label className="text-xs text-yt-muted block mb-1">Category</label>
                   <input
                     value={editForm.category}
                     onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                    placeholder="Film, Musik..."
+                    placeholder="Movies, Music..."
                     className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-yt-muted block mb-1">Längd (sekunder)</label>
+                  <label className="text-xs text-yt-muted block mb-1">Duration (seconds)</label>
                   <input
                     type="number"
                     value={editForm.duration}
@@ -652,17 +652,17 @@ export default function MediaAdminPage() {
               </div>
 
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Taggar (kommaseparerade)</label>
+                <label className="text-xs text-yt-muted block mb-1">Tags (comma-separated)</label>
                 <input
                   value={editForm.tags}
                   onChange={(e) => setEditForm({ ...editForm, tags: e.target.value })}
-                  placeholder="tagg1, tagg2, tagg3"
+                  placeholder="tag1, tag2, tag3"
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Thumbnail-URL</label>
+                <label className="text-xs text-yt-muted block mb-1">Thumbnail URL</label>
                 <input
                   value={editForm.thumbnail_url}
                   onChange={(e) => setEditForm({ ...editForm, thumbnail_url: e.target.value })}
@@ -672,7 +672,7 @@ export default function MediaAdminPage() {
               </div>
 
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Beskrivning</label>
+                <label className="text-xs text-yt-muted block mb-1">Description</label>
                 <textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
@@ -689,7 +689,7 @@ export default function MediaAdminPage() {
                     onChange={(e) => setEditForm({ ...editForm, needs_ytdlp: e.target.checked })}
                     className="w-4 h-4 accent-blue-600"
                   />
-                  <span className="text-sm text-yt-text">Spelas via yt-dlp</span>
+                  <span className="text-sm text-yt-text">Played via yt-dlp</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer select-none w-fit">
                   <input
@@ -698,7 +698,7 @@ export default function MediaAdminPage() {
                     onChange={(e) => setEditForm({ ...editForm, is_adult: e.target.checked })}
                     className="w-4 h-4 accent-red-600"
                   />
-                  <span className="text-sm text-yt-text">Adult-innehåll (18+)</span>
+                  <span className="text-sm text-yt-text">Adult content (18+)</span>
                 </label>
               </div>
 
@@ -710,14 +710,14 @@ export default function MediaAdminPage() {
                   disabled={editLoading}
                   className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
-                  {editLoading ? "Sparar..." : "Spara ändringar"}
+                  {editLoading ? "Saving..." : "Save changes"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditItem(null)}
                   className="bg-yt-bg hover:bg-yt-hover border border-yt-border text-yt-text px-4 py-2 rounded-lg text-sm transition-colors"
                 >
-                  Avbryt
+                  Cancel
                 </button>
               </div>
             </form>

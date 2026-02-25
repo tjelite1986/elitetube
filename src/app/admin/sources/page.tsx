@@ -46,7 +46,7 @@ export default function SourcesAdminPage() {
   }
 
   async function handleDelete(id: number) {
-    if (!confirm("Ta bort källan?")) return;
+    if (!confirm("Delete this source?")) return;
     await fetch(`/api/sources?id=${id}`, { method: "DELETE" });
     load();
   }
@@ -56,16 +56,16 @@ export default function SourcesAdminPage() {
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin" className="text-yt-muted hover:text-yt-text text-sm">← Admin</Link>
-          <h1 className="text-2xl font-bold">Hantera källor</h1>
+          <h1 className="text-2xl font-bold">Manage sources</h1>
         </div>
 
-        {/* Lägg till källa */}
+        {/* Add source */}
         <div className="bg-yt-surface border border-yt-border rounded-xl p-6 mb-8">
-          <h2 className="font-semibold mb-4">Lägg till källa</h2>
+          <h2 className="font-semibold mb-4">Add source</h2>
           <form onSubmit={handleAdd} className="flex flex-col gap-3">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Namn *</label>
+                <label className="text-xs text-yt-muted block mb-1">Name *</label>
                 <input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -75,20 +75,20 @@ export default function SourcesAdminPage() {
                 />
               </div>
               <div>
-                <label className="text-xs text-yt-muted block mb-1">Typ *</label>
+                <label className="text-xs text-yt-muted block mb-1">Type *</label>
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                   className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
                 >
-                  <option value="local">Lokal sökväg</option>
-                  <option value="smb">SMB/Nätverksdelning</option>
-                  <option value="external_url">Extern URL</option>
+                  <option value="local">Local path</option>
+                  <option value="smb">SMB/Network share</option>
+                  <option value="external_url">External URL</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Sökväg/URL</label>
+              <label className="text-xs text-yt-muted block mb-1">Path/URL</label>
               <input
                 value={form.path}
                 onChange={(e) => setForm({ ...form, path: e.target.value })}
@@ -97,11 +97,11 @@ export default function SourcesAdminPage() {
               />
             </div>
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Beskrivning</label>
+              <label className="text-xs text-yt-muted block mb-1">Description</label>
               <input
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                placeholder="Valfri beskrivning"
+                placeholder="Optional description"
                 className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -111,15 +111,15 @@ export default function SourcesAdminPage() {
               disabled={loading}
               className="bg-yt-red hover:bg-red-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium self-start transition-colors"
             >
-              {loading ? "Sparar..." : "Lägg till"}
+              {loading ? "Saving..." : "Add"}
             </button>
           </form>
         </div>
 
-        {/* Lista */}
+        {/* List */}
         <div className="flex flex-col gap-3">
           {sources.length === 0 ? (
-            <p className="text-yt-muted text-sm">Inga källor tillagda.</p>
+            <p className="text-yt-muted text-sm">No sources added.</p>
           ) : (
             sources.map((s) => (
               <div key={s.id} className="bg-yt-surface border border-yt-border rounded-xl p-4 flex items-start justify-between gap-4">
@@ -135,7 +135,7 @@ export default function SourcesAdminPage() {
                   onClick={() => handleDelete(s.id)}
                   className="text-yt-muted hover:text-red-400 transition-colors shrink-0 text-sm"
                 >
-                  Ta bort
+                  Delete
                 </button>
               </div>
             ))

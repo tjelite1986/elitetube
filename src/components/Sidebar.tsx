@@ -3,23 +3,23 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-const CATEGORIES = ["Animation", "Film", "Musik", "Dokumentär", "Sport", "Gaming", "Utbildning"];
+const CATEGORIES = ["Animation", "Movies", "Music", "Documentary", "Sports", "Gaming", "Education"];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const onAdultPath = pathname.startsWith("/adult");
 
-  // Initialt värde baserat på nuvarande stig (undviker hydration-mismatch)
+  // Initial value based on current path (avoids hydration mismatch)
   const [adultMode, setAdultMode] = useState(onAdultPath);
 
   useEffect(() => {
     if (onAdultPath) {
-      // Gick in i adult-läge — spara i sessionStorage
+      // Entered adult mode — save in sessionStorage
       sessionStorage.setItem("adultMode", "1");
       setAdultMode(true);
     } else {
-      // Annan sida — läs sessionStorage
+      // Other page — read sessionStorage
       setAdultMode(sessionStorage.getItem("adultMode") === "1");
     }
   }, [onAdultPath]);
@@ -35,36 +35,37 @@ export default function Sidebar() {
   return (
     <>
       {/* ── Desktop sidebar ── */}
+
       <aside className="fixed left-0 top-14 bottom-0 w-56 bg-yt-bg overflow-y-auto py-3 hidden lg:block border-r border-yt-border">
         {isAdult ? (
-          /* Adult-läge desktop */
+          /* Adult mode desktop */
           <nav className="flex flex-col gap-1 px-2">
-            {/* 18+-banner */}
+            {/* 18+ banner */}
             <div className="mx-2 mb-3 px-3 py-2 bg-red-950 border border-red-800 rounded-lg flex items-center gap-2">
-              <span className="text-red-400 text-xs font-bold">18+ LÄGE</span>
+              <span className="text-red-400 text-xs font-bold">18+ MODE</span>
             </div>
-            <SidebarLink href="/adult" label="Hem" icon={<IconHome />} active={pathname === "/adult"} />
-            <SidebarLink href="/adult/search" label="Sök" icon={<IconSearch />} active={pathname.startsWith("/adult/search")} />
-            <SidebarLink href="/playlists" label="Spellistor" icon={<IconPlaylist />} active={false} />
+            <SidebarLink href="/adult" label="Home" icon={<IconHome />} active={pathname === "/adult"} />
+            <SidebarLink href="/adult/search" label="Search" icon={<IconSearch />} active={pathname.startsWith("/adult/search")} />
+            <SidebarLink href="/playlists" label="Playlists" icon={<IconPlaylist />} active={false} />
             <div className="my-3 border-t border-yt-border" />
             <button
               onClick={exitAdultMode}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-yt-muted hover:bg-yt-hover hover:text-yt-text transition-colors w-full text-left"
             >
               <span className="w-5 h-5 shrink-0"><IconExit /></span>
-              <span>Tillbaka till normalt</span>
+              <span>Back to normal</span>
             </button>
           </nav>
         ) : (
-          /* Normalt läge desktop */
+          /* Normal mode desktop */
           <nav className="flex flex-col gap-1 px-2">
-            <SidebarLink href="/" label="Hem" icon={<IconHome />} active={pathname === "/"} />
-            <SidebarLink href="/search" label="Utforska" icon={<IconSearch />} active={pathname === "/search"} />
-            <SidebarLink href="/playlists" label="Mina playlists" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
+            <SidebarLink href="/" label="Home" icon={<IconHome />} active={pathname === "/"} />
+            <SidebarLink href="/search" label="Explore" icon={<IconSearch />} active={pathname === "/search"} />
+            <SidebarLink href="/playlists" label="My playlists" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
             <div className="my-3 border-t border-yt-border" />
             <SidebarLink href="/adult" label="18+" icon={<IconAdult />} active={false} />
             <div className="my-3 border-t border-yt-border" />
-            <p className="text-xs text-yt-muted px-3 py-1 uppercase tracking-wider">Kategorier</p>
+            <p className="text-xs text-yt-muted px-3 py-1 uppercase tracking-wider">Categories</p>
             {CATEGORIES.map((cat) => (
               <SidebarLink
                 key={cat}
@@ -78,21 +79,21 @@ export default function Sidebar() {
         )}
       </aside>
 
-      {/* ── Mobil bottom nav ── */}
+      {/* ── Mobile bottom nav ── */}
       {isAdult ? (
-        /* Adult-läge mobil */
+        /* Adult mode mobile */
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-yt-bg border-t-2 border-red-700 flex lg:hidden h-14">
-          <MobileNavItem href="/adult" label="Hem" icon={<IconHome />} active={pathname === "/adult"} adult />
-          <MobileNavItem href="/adult/search" label="Sök" icon={<IconSearch />} active={pathname.startsWith("/adult/search")} adult />
-          <MobileNavItem href="/playlists" label="Spellistor" icon={<IconPlaylist />} active={false} adult />
+          <MobileNavItem href="/adult" label="Home" icon={<IconHome />} active={pathname === "/adult"} adult />
+          <MobileNavItem href="/adult/search" label="Search" icon={<IconSearch />} active={pathname.startsWith("/adult/search")} adult />
+          <MobileNavItem href="/playlists" label="Playlists" icon={<IconPlaylist />} active={false} adult />
           <MobileNavExitItem onClick={exitAdultMode} />
         </nav>
       ) : (
-        /* Normalt läge mobil */
+        /* Normal mode mobile */
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-yt-bg border-t border-yt-border flex lg:hidden h-14">
-          <MobileNavItem href="/" label="Hem" icon={<IconHome />} active={pathname === "/"} />
-          <MobileNavItem href="/search" label="Utforska" icon={<IconSearch />} active={pathname.startsWith("/search")} />
-          <MobileNavItem href="/playlists" label="Spellistor" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
+          <MobileNavItem href="/" label="Home" icon={<IconHome />} active={pathname === "/"} />
+          <MobileNavItem href="/search" label="Explore" icon={<IconSearch />} active={pathname.startsWith("/search")} />
+          <MobileNavItem href="/playlists" label="Playlists" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
           <MobileNavItem href="/adult" label="18+" icon={<IconAdult />} active={false} />
         </nav>
       )}
@@ -100,7 +101,7 @@ export default function Sidebar() {
   );
 }
 
-/* ── Komponenter ── */
+/* ── Components ── */
 
 function MobileNavExitItem({ onClick }: { onClick: () => void }) {
   return (
@@ -109,7 +110,7 @@ function MobileNavExitItem({ onClick }: { onClick: () => void }) {
       className="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors text-yt-muted"
     >
       <span className="w-6 h-6"><IconExit /></span>
-      <span className="text-[10px] font-medium">Avsluta</span>
+      <span className="text-[10px] font-medium">Exit</span>
     </button>
   );
 }
@@ -158,7 +159,7 @@ function SidebarLink({
   );
 }
 
-/* ── SVG-ikoner ── */
+/* ── SVG icons ── */
 
 function IconHome() {
   return (

@@ -32,7 +32,7 @@ export default async function AdultSearchPage({
   let allTags: string[] = [];
 
   if (adultUnlocked) {
-    // Hämta alla unika taggar
+    // Fetch all unique tags
     const tagRows = db
       .prepare("SELECT tags FROM media WHERE is_adult = 1 AND tags IS NOT NULL AND tags != ''")
       .all() as { tags: string }[];
@@ -87,12 +87,12 @@ export default async function AdultSearchPage({
       <main className="pt-14 pb-14 lg:pl-56 lg:pb-0">
         <div className="px-3 sm:px-6 py-4 max-w-screen-2xl mx-auto">
           {!pinRow ? (
-            <p className="text-yt-muted text-sm">Ingen PIN-kod är satt.</p>
+            <p className="text-yt-muted text-sm">No PIN code is set.</p>
           ) : !adultUnlocked ? (
             <AdultPinGate />
           ) : (
             <>
-              {/* Taggar som kategorichips */}
+              {/* Tags as category chips */}
               {allTags.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide mb-4">
                   <a
@@ -103,7 +103,7 @@ export default async function AdultSearchPage({
                         : "bg-yt-surface border border-yt-border text-yt-muted hover:text-yt-text hover:bg-yt-hover"
                     }`}
                   >
-                    Alla
+                    All
                   </a>
                   {allTags.map((t) => (
                     <a
@@ -124,9 +124,9 @@ export default async function AdultSearchPage({
               {q || tag ? (
                 <>
                   <p className="text-yt-muted text-sm mb-6">
-                    {items.length} resultat
-                    {q && <> för &quot;<span className="text-yt-text">{q}</span>&quot;</>}
-                    {tag && <> i kategorin <span className="text-yt-text">{tag}</span></>}
+                    {items.length} results
+                    {q && <> for &quot;<span className="text-yt-text">{q}</span>&quot;</>}
+                    {tag && <> in category <span className="text-yt-text">{tag}</span></>}
                   </p>
                   <MediaGrid items={items} />
                 </>
@@ -135,11 +135,11 @@ export default async function AdultSearchPage({
                   <RecentCarousel items={recentItems} />
                   {recentItems.length > 0 && (
                     <div className="flex items-center gap-3 px-3 sm:px-0 pt-4 pb-1">
-                      <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">Alla videor</h2>
+                      <h2 className="text-sm font-semibold text-yt-text whitespace-nowrap">All videos</h2>
                       <div className="flex-1 h-px bg-yt-border" />
                     </div>
                   )}
-                  <p className="text-yt-muted px-3 sm:px-0 mt-4">Skriv något i sökrutan ovan.</p>
+                  <p className="text-yt-muted px-3 sm:px-0 mt-4">Type something in the search box above.</p>
                 </>
               )}
             </>

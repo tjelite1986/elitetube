@@ -6,8 +6,8 @@ export default function MediaGrid({ items }: { items: MediaItem[] }) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-yt-muted px-4">
         <p className="text-5xl mb-4">📭</p>
-        <p className="text-lg">Ingen media hittad</p>
-        <p className="text-sm mt-1">Lägg till media via admin-panelen</p>
+        <p className="text-lg">No media found</p>
+        <p className="text-sm mt-1">Add media via the admin panel</p>
       </div>
     );
   }

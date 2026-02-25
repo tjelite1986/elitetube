@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function PlaylistCard({ playlist, thumbnailUrl, previewUrl }: Props) {
-  const date = new Date(playlist.created_at).toLocaleDateString("sv-SE", {
+  const date = new Date(playlist.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -81,7 +81,7 @@ export default function PlaylistCard({ playlist, thumbnailUrl, previewUrl }: Pro
           />
         )}
 
-        {/* Antal videos-badge */}
+        {/* Video count badge */}
         <span
           className={`absolute bottom-1.5 right-1.5 bg-black/80 text-white text-xs font-medium px-1.5 py-0.5 rounded transition-opacity duration-300 ${
             active ? "opacity-0" : ""

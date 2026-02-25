@@ -9,9 +9,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
   const db = getDb();
   const item = db.prepare("SELECT * FROM media WHERE id = ?").get(parseInt(params.id));
-  if (!item) return NextResponse.json({ error: "Inte hittad" }, { status: 404 });
+  if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  // Öka visningar
+  // Increment views
   db.prepare("UPDATE media SET views = views + 1 WHERE id = ?").run(parseInt(params.id));
 
   return NextResponse.json(item);

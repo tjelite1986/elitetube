@@ -4,7 +4,7 @@ import fs from "fs";
 
 const DB_PATH = process.env.DATABASE_PATH || path.join(process.cwd(), "data", "elitetube.db");
 
-// Se till att katalogen finns
+// Ensure the directory exists
 const dbDir = path.dirname(DB_PATH);
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
@@ -76,23 +76,23 @@ function migrate(db: Database.Database) {
 
   try {
     db.exec(`ALTER TABLE media ADD COLUMN needs_ytdlp INTEGER NOT NULL DEFAULT 0`);
-  } catch { /* kolumnen finns redan */ }
+  } catch { /* column already exists */ }
 
   try {
     db.exec(`ALTER TABLE media ADD COLUMN is_adult INTEGER NOT NULL DEFAULT 0`);
-  } catch { /* kolumnen finns redan */ }
+  } catch { /* column already exists */ }
 
   try {
     db.exec(`ALTER TABLE media ADD COLUMN tags TEXT`);
-  } catch { /* kolumnen finns redan */ }
+  } catch { /* column already exists */ }
 
   try {
     db.exec(`ALTER TABLE media ADD COLUMN likes INTEGER NOT NULL DEFAULT 0`);
-  } catch { /* kolumnen finns redan */ }
+  } catch { /* column already exists */ }
 
   try {
     db.exec(`ALTER TABLE media ADD COLUMN dislikes INTEGER NOT NULL DEFAULT 0`);
-  } catch { /* kolumnen finns redan */ }
+  } catch { /* column already exists */ }
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS settings (

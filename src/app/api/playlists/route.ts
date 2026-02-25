@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
   const { name, description } = await req.json();
   if (!name || typeof name !== "string" || !name.trim()) {
-    return NextResponse.json({ error: "Namn krävs" }, { status: 400 });
+    return NextResponse.json({ error: "Name is required" }, { status: 400 });
   }
 
   const db = getDb();

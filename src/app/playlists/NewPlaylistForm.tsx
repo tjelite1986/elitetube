@@ -34,7 +34,7 @@ export default function NewPlaylistForm() {
           onClick={() => setOpen(true)}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors"
         >
-          + Ny playlist
+          + New playlist
         </button>
       ) : (
         <form onSubmit={handleSubmit} className="flex items-end gap-2 flex-wrap">
@@ -43,7 +43,7 @@ export default function NewPlaylistForm() {
               autoFocus
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Playlistnamn *"
+              placeholder="Playlist name *"
               className="bg-yt-surface border border-yt-border rounded-lg px-3 py-1.5 text-sm text-yt-text placeholder-yt-muted focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -51,7 +51,7 @@ export default function NewPlaylistForm() {
             <input
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Beskrivning (valfri)"
+              placeholder="Description (optional)"
               className="bg-yt-surface border border-yt-border rounded-lg px-3 py-1.5 text-sm text-yt-text placeholder-yt-muted focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -60,14 +60,14 @@ export default function NewPlaylistForm() {
             disabled={loading || !name.trim()}
             className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm rounded-lg transition-colors"
           >
-            {loading ? "Skapar..." : "Skapa"}
+            {loading ? "Creating..." : "Create"}
           </button>
           <button
             type="button"
             onClick={() => setOpen(false)}
             className="px-3 py-1.5 text-sm text-yt-muted hover:text-yt-text transition-colors"
           >
-            Avbryt
+            Cancel
           </button>
         </form>
       )}

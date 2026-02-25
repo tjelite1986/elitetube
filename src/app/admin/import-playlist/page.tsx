@@ -32,7 +32,7 @@ export default function ImportPlaylistPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Okänt fel");
+        setError(data.error || "Unknown error");
       } else {
         setResult(data);
         setUrl("");
@@ -40,7 +40,7 @@ export default function ImportPlaylistPage() {
         setIsAdult(false);
       }
     } catch {
-      setError("Nätverksfel");
+      setError("Network error");
     } finally {
       setLoading(false);
     }
@@ -53,18 +53,18 @@ export default function ImportPlaylistPage() {
           <Link href="/admin" className="text-yt-muted hover:text-yt-text text-sm">
             ← Admin
           </Link>
-          <h1 className="text-2xl font-bold">Importera spellista</h1>
+          <h1 className="text-2xl font-bold">Import playlist</h1>
         </div>
 
         <div className="bg-yt-surface border border-yt-border rounded-xl p-6 mb-6">
           <p className="text-sm text-yt-muted mb-5">
-            Klistra in en spelliste-URL från YouTube, Vimeo, Rumble eller annan plattform som
-            stöds av yt-dlp. Alla videos i spellistan läggs till som media automatiskt.
+            Paste a playlist URL from YouTube, Vimeo, Rumble or any other platform
+            supported by yt-dlp. All videos in the playlist will be added as media automatically.
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Spelliste-URL *</label>
+              <label className="text-xs text-yt-muted block mb-1">Playlist URL *</label>
               <input
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -75,11 +75,11 @@ export default function ImportPlaylistPage() {
             </div>
 
             <div>
-              <label className="text-xs text-yt-muted block mb-1">Kategori (gäller alla videos)</label>
+              <label className="text-xs text-yt-muted block mb-1">Category (applies to all videos)</label>
               <input
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                placeholder="Film, Musik, Sport..."
+                placeholder="Movies, Music, Sports..."
                 className="w-full bg-yt-bg border border-yt-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -92,8 +92,8 @@ export default function ImportPlaylistPage() {
                 className="w-4 h-4 accent-red-600"
               />
               <span className="text-sm text-yt-text">
-                Adult-innehåll (18+)
-                <span className="ml-1 text-xs text-yt-muted">— märker alla videos som 18+</span>
+                Adult content (18+)
+                <span className="ml-1 text-xs text-yt-muted">— marks all videos as 18+</span>
               </span>
             </label>
 
@@ -104,35 +104,35 @@ export default function ImportPlaylistPage() {
               disabled={loading || !url}
               className="bg-yt-red hover:bg-red-700 disabled:opacity-50 text-white px-5 py-2 rounded-lg text-sm font-medium self-start transition-colors"
             >
-              {loading ? "Importerar — kan ta en stund..." : "Importera spellista"}
+              {loading ? "Importing — this may take a while..." : "Import playlist"}
             </button>
           </form>
         </div>
 
         {result && (
           <div className="bg-yt-surface border border-yt-border rounded-xl p-6">
-            <h2 className="font-semibold mb-3">Resultat</h2>
+            <h2 className="font-semibold mb-3">Result</h2>
 
             <div className="flex gap-6 mb-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-400">{result.imported}</div>
-                <div className="text-xs text-yt-muted mt-0.5">importerade</div>
+                <div className="text-xs text-yt-muted mt-0.5">imported</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-yt-muted">{result.total}</div>
-                <div className="text-xs text-yt-muted mt-0.5">totalt hittade</div>
+                <div className="text-xs text-yt-muted mt-0.5">total found</div>
               </div>
               {result.errors.length > 0 && (
                 <div className="text-center">
                   <div className="text-3xl font-bold text-red-400">{result.errors.length}</div>
-                  <div className="text-xs text-yt-muted mt-0.5">fel</div>
+                  <div className="text-xs text-yt-muted mt-0.5">errors</div>
                 </div>
               )}
             </div>
 
             {result.errors.length > 0 && (
               <div className="mt-3">
-                <p className="text-xs text-yt-muted mb-2">Fel:</p>
+                <p className="text-xs text-yt-muted mb-2">Errors:</p>
                 <ul className="flex flex-col gap-1">
                   {result.errors.map((e, i) => (
                     <li key={i} className="text-xs text-red-400 font-mono">
@@ -147,7 +147,7 @@ export default function ImportPlaylistPage() {
               href="/admin/media"
               className="inline-block mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors"
             >
-              Visa importerade videos →
+              View imported videos →
             </Link>
           </div>
         )}

@@ -48,8 +48,8 @@ export default async function PlaylistDetailPage({
         <Header />
         <main className="pt-14">
           <div className="max-w-4xl mx-auto px-4 py-12 text-center text-yt-muted">
-            <p className="text-2xl mb-2">Playlist är tom</p>
-            <p className="text-sm">Lägg till videos via knappen &quot;Spara i playlist&quot; på en video.</p>
+            <p className="text-2xl mb-2">Playlist is empty</p>
+            <p className="text-sm">Add videos using the &quot;Save to playlist&quot; button on a video.</p>
           </div>
         </main>
       </div>
@@ -70,7 +70,7 @@ export default async function PlaylistDetailPage({
       <Header />
       <main className="pt-14">
         <div className="max-w-screen-2xl mx-auto px-4 py-6 flex flex-col xl:flex-row gap-6">
-          {/* Vänster — spelare + info */}
+          {/* Left — player + info */}
           <div className="flex-1 min-w-0">
             <VideoPlayer item={currentItem} />
 
@@ -87,7 +87,7 @@ export default async function PlaylistDetailPage({
             </div>
           </div>
 
-          {/* Höger — playlist-sidebar */}
+          {/* Right — playlist sidebar */}
           <aside className="xl:w-80 shrink-0">
             <div className="bg-yt-surface rounded-xl p-3 border border-yt-border">
               <div className="flex items-center justify-between mb-3 px-1">

@@ -46,10 +46,10 @@ export async function POST(req: NextRequest) {
   const { title, description, type, source_id, filename, url, thumbnail_url, duration, category, tags, needs_ytdlp, is_adult } = body;
 
   if (!title || !type) {
-    return NextResponse.json({ error: "title och type krävs" }, { status: 400 });
+    return NextResponse.json({ error: "title and type are required" }, { status: 400 });
   }
 
-  // Auto-thumbnail för YouTube
+  // Auto-thumbnail for YouTube
   let thumb = thumbnail_url;
   if (!thumb && url && isYouTubeUrl(url)) {
     const ytId = extractYouTubeId(url);

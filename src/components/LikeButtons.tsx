@@ -42,7 +42,7 @@ export default function LikeButtons({
         <button
           onClick={() => vote("like")}
           disabled={!!voted}
-          title="Bra video"
+          title="Good video"
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-l-full border text-sm font-medium transition-colors ${
             voted === "like"
               ? "bg-blue-600 border-blue-600 text-white"
@@ -58,7 +58,7 @@ export default function LikeButtons({
         <button
           onClick={() => vote("dislike")}
           disabled={!!voted}
-          title="Dålig video"
+          title="Bad video"
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-r-full border border-l-0 text-sm font-medium transition-colors ${
             voted === "dislike"
               ? "bg-red-700 border-red-700 text-white"

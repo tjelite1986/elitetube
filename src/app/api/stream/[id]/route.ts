@@ -17,21 +17,21 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     | undefined;
 
   if (!item || !item.filename) {
-    return NextResponse.json({ error: "Inte hittad eller ingen lokal fil" }, { status: 404 });
+    return NextResponse.json({ error: "Not found or no local file" }, { status: 404 });
   }
 
-  // Konstruera filsökväg — filename kan vara absolut eller relativ till MEDIA_BASE
+  // Build file path — filename can be absolute or relative to MEDIA_BASE
   const filePath = item.filename.startsWith("/") ? item.filename : path.join(MEDIA_BASE, item.filename);
 
   if (!fs.existsSync(filePath)) {
-    return NextResponse.json({ error: "Filen saknas på disk" }, { status: 404 });
+    return NextResponse.json({ error: "File not found on disk" }, { status: 404 });
   }
 
   const stat = fs.statSync(filePath);
   const fileSize = stat.size;
   const rangeHeader = req.headers.get("range");
 
-  // Bestäm content-type baserat på filnamn
+  // Determine content-type based on filename
   const ext = path.extname(filePath).toLowerCase();
   const mimeTypes: Record<string, string> = {
     ".mp4": "video/mp4",

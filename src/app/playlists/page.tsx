@@ -28,7 +28,7 @@ export default async function PlaylistsPage() {
     )
     .all(userId) as PlaylistWithCount[];
 
-  // Hämta första mediaitem per playlist (lägsta position)
+  // Fetch first media item per playlist (lowest position)
   type FirstItem = MediaItem & { playlist_id: number };
   const firstItems = db
     .prepare(
@@ -65,15 +65,15 @@ export default async function PlaylistsPage() {
       <main className="pt-14 pb-14 lg:pl-56 lg:pb-0">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-xl font-bold text-yt-text">Mina playlists</h1>
+            <h1 className="text-xl font-bold text-yt-text">My playlists</h1>
             <NewPlaylistForm />
           </div>
 
           {playlists.length === 0 ? (
             <div className="text-center py-16 text-yt-muted">
               <p className="text-4xl mb-4">&#9654;</p>
-              <p className="text-lg font-medium">Inga playlists</p>
-              <p className="text-sm mt-1">Skapa din första playlist via knappen Spara i playlist på en video.</p>
+              <p className="text-lg font-medium">No playlists</p>
+              <p className="text-sm mt-1">Create your first playlist using the Save to playlist button on a video.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
