@@ -6,6 +6,7 @@ import { getDb, MediaItem, PlaylistItemWithMedia } from "@/lib/db";
 import Header from "@/components/Header";
 import VideoPlayer from "@/components/VideoPlayer";
 import AddToPlaylistButton from "@/components/AddToPlaylistButton";
+import DownloadButton from "@/components/DownloadButton";
 import LikeButtons from "@/components/LikeButtons";
 import RelatedCard from "@/components/RelatedCard";
 import AutoNextController from "@/components/AutoNextController";
@@ -113,7 +114,7 @@ export default async function WatchPage({
                 )}
               </div>
 
-              {/* Like buttons + playlist */}
+              {/* Like buttons + playlist + download */}
               <div className="flex items-center gap-3 mt-3 flex-wrap">
                 <LikeButtons
                   mediaId={item.id}
@@ -121,6 +122,9 @@ export default async function WatchPage({
                   initialDislikes={item.dislikes ?? 0}
                 />
                 <AddToPlaylistButton mediaId={item.id} />
+                {item.url && !item.filename && (
+                  <DownloadButton mediaId={item.id} />
+                )}
               </div>
 
               {/* Tags */}
