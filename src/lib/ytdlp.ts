@@ -47,6 +47,39 @@ export async function fetchYtdlpMeta(url: string): Promise<YtdlpMeta> {
   };
 }
 
+export type YtSearchResult = {
+  id: string;
+  title: string;
+  duration: number | null;
+  thumbnail: string | null;
+  channel: string | null;
+  view_count: number | null;
+  url: string;
+};
+
+export async function searchYoutube(query: string, limit = 20): Promise<YtSearchResult[]> {
+  const { stdout } = await execFileAsync(
+    YTDLP_PATH,
+    [...commonArgs(), "--flat-playlist", "--dump-json", "--", `ytsearch${limit}:${query}`],
+    { timeout: 30_000 }
+  );
+  return stdout.trim().split("\n").filter(Boolean).map(line => {
+    const d = JSON.parse(line);
+    const thumb = d.thumbnail ?? (Array.isArray(d.thumbnails) && d.thumbnails.length > 0
+      ? d.thumbnails[d.thumbnails.length - 1]?.url
+      : null);
+    return {
+      id: String(d.id),
+      title: d.title ?? "Unknown",
+      duration: d.duration ?? null,
+      thumbnail: thumb ?? null,
+      channel: d.channel ?? d.uploader ?? null,
+      view_count: d.view_count ?? null,
+      url: d.webpage_url ?? `https://www.youtube.com/watch?v=${d.id}`,
+    };
+  });
+}
+
 export async function resolveYtdlpUrl(url: string): Promise<string> {
   const { stdout } = await execFileAsync(
     YTDLP_PATH,

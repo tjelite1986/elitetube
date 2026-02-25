@@ -62,6 +62,7 @@ export default function Sidebar() {
             <SidebarLink href="/" label="Home" icon={<IconHome />} active={pathname === "/"} />
             <SidebarLink href="/search" label="Explore" icon={<IconSearch />} active={pathname === "/search"} />
             <SidebarLink href="/playlists" label="My playlists" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
+            <SidebarLink href="/youtube" label="YouTube" icon={<IconYouTube />} active={pathname.startsWith("/youtube")} />
             <div className="my-3 border-t border-yt-border" />
             <SidebarLink href="/adult" label="18+" icon={<IconAdult />} active={false} />
             <div className="my-3 border-t border-yt-border" />
@@ -94,6 +95,7 @@ export default function Sidebar() {
           <MobileNavItem href="/" label="Home" icon={<IconHome />} active={pathname === "/"} />
           <MobileNavItem href="/search" label="Explore" icon={<IconSearch />} active={pathname.startsWith("/search")} />
           <MobileNavItem href="/playlists" label="Playlists" icon={<IconPlaylist />} active={pathname.startsWith("/playlists")} />
+          <MobileNavItem href="/youtube" label="YouTube" icon={<IconYouTube />} active={pathname.startsWith("/youtube")} />
           <MobileNavItem href="/adult" label="18+" icon={<IconAdult />} active={false} />
         </nav>
       )}
@@ -210,6 +212,14 @@ function IconPlay() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
       <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  );
+}
+
+function IconYouTube() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C16.4 2.7 12 2.7 12 2.7s-4.4 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.2v2c0 2.1.3 4.2.3 4.2s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.2 21.6 12 21.6 12 21.6s4.4 0 6.8-.3c.6-.1 1.9-.1 3-1.3.9-.8 1.2-2.8 1.2-2.8s.3-2.1.3-4.2v-2C23.3 9.1 23 7 23 7zM9.7 15.5V8.4l8.1 3.6-8.1 3.5z"/>
     </svg>
   );
 }
