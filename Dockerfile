@@ -1,5 +1,5 @@
 # ---- Builder ----
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
@@ -9,13 +9,13 @@ COPY . .
 RUN npm run build
 
 # ---- Runner ----
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN apk add --no-cache ffmpeg python3 py3-pip && \
+RUN apk add --no-cache ffmpeg python3 py3-pip quickjs && \
     pip3 install --no-cache-dir --break-system-packages yt-dlp
 
 RUN addgroup --system --gid 1001 nodejs && \

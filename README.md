@@ -1,21 +1,21 @@
 # EliteTube
 
-Självhostad mediaspelare byggd med Next.js 14. Streama lokala filer, direkta URL:er och YouTube/Vimeo via yt-dlp — allt i ett YouTube-inspirerat gränssnitt.
+Self-hosted media player built with Next.js 14. Stream local files, direct URLs and YouTube/Vimeo via yt-dlp — all in a YouTube-inspired interface.
 
-## Funktioner
+## Features
 
-- **Mediabiblotek** — lokala filer, direkta URL:er, YouTube/Vimeo via yt-dlp
-- **Adult-sektion** — separat 18+-bibliotek med PIN-lås
-- **Spellistor** — skapa och spela spellistor med auto-next
-- **Tagg-kategorier** — filtrera innehåll efter taggar på start- och söksidor
-- **Sort & filter** — sortera på nyaste/mest sedda/längst, filtrera på videolängd
-- **Hover-preview** — förhandsgranska video vid hovring över kort
-- **Likes/dislikes** — tumme upp/ned med procentbar
-- **Import av spellistor** — importera hela YouTube-spellistor med ett klick
-- **Admin-panel** — hantera media, källor, taggar och adult-inställningar
-- **Bulk-hantering** — markera flera mediafiler, hämta metadata eller radera i bulk
-- **Mobil-anpassad** — bottom nav, full-bredd thumbnails, responsiv layout
-- **Docker-redo** — multi-stage Dockerfile med yt-dlp och ffmpeg
+- **Media library** — local files, direct URLs, YouTube/Vimeo via yt-dlp
+- **Adult section** — separate 18+ library with PIN lock
+- **Playlists** — create and play playlists with auto-next
+- **Tag categories** — filter content by tags on home and search pages
+- **Sort & filter** — sort by newest/most viewed/longest, filter by video length
+- **Hover preview** — preview video on card hover
+- **Likes/dislikes** — thumbs up/down with percentage bar
+- **Playlist import** — import entire YouTube playlists with one click
+- **Admin panel** — manage media, sources, tags and adult settings
+- **Bulk management** — select multiple media items, fetch metadata or delete in bulk
+- **Mobile-friendly** — bottom nav, full-width thumbnails, responsive layout
+- **Docker-ready** — multi-stage Dockerfile with yt-dlp and ffmpeg
 
 ## Stack
 
@@ -26,32 +26,32 @@ Självhostad mediaspelare byggd med Next.js 14. Streama lokala filer, direkta UR
 - [NextAuth.js](https://next-auth.js.org/)
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
-## Skärmdumpar
+## Screenshots
 
-### Surfplatta
+### Tablet
 
-![Startsida — surfplatta](docs/Screenshot_tablet_2.jpg)
+![Home — tablet](docs/Screenshot_tablet_2.jpg)
 
-![Videospelaren — surfplatta](docs/Screenshot_tablet_1.jpg)
+![Video player — tablet](docs/Screenshot_tablet_1.jpg)
 
-### Mobil
+### Mobile
 
 <p float="left">
   <img src="docs/Screenshot_mobile_1.png" width="48%" />
   <img src="docs/Screenshot_mobile_2.png" width="48%" />
 </p>
 
-## Kom igång
+## Getting started
 
-### Docker (rekommenderat)
+### Docker (recommended)
 
-1. Kopiera miljövariabelfilen och fyll i värden:
+1. Copy the environment file and fill in your values:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Exempel på `docker-compose.yml`:
+2. Example `docker-compose.yml`:
 
 ```yaml
 services:
@@ -65,9 +65,9 @@ services:
       - elitetube-data:/app/data
       - /path/to/your/media:/media:ro
     environment:
-      - NEXTAUTH_SECRET=en-lång-slumpmässig-sträng
+      - NEXTAUTH_SECRET=a-long-random-string
       - NEXTAUTH_URL=http://localhost:3001
-      - ADMIN_PASSWORD=ditt-lösenord
+      - ADMIN_PASSWORD=your-password
       - DATABASE_PATH=/app/data/elitetube.db
       - MEDIA_PATH=/media
 
@@ -75,51 +75,90 @@ volumes:
   elitetube-data:
 ```
 
-3. Starta:
+3. Start:
 
 ```bash
 docker compose up -d --build
 ```
 
-Öppna `http://localhost:3001` och logga in med användaren `admin` och det lösenord du satte i `ADMIN_PASSWORD`.
+Open `http://localhost:3001` and log in with username `admin` and the password you set in `ADMIN_PASSWORD`.
 
-### Lokal utveckling
+### Local development
 
-Kräver Node.js 18+ och yt-dlp installerat.
+Requires Node.js 20+ and yt-dlp installed.
 
 ```bash
 npm install
 cp .env.example .env.local
-# Redigera .env.local med dina värden
+# Edit .env.local with your values
 npm run dev
 ```
 
-Appen startar på `http://localhost:3001`.
+The app starts on `http://localhost:3001`.
 
-## Miljövariabler
+## Environment variables
 
-| Variabel | Beskrivning | Exempel |
+| Variable | Description | Example |
 |----------|-------------|---------|
-| `NEXTAUTH_SECRET` | Hemlig nyckel för JWT-signering | `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | Publik URL till appen | `https://elitetube.example.com` |
-| `ADMIN_PASSWORD` | Lösenord för admin-kontot | `mittlösenord` |
-| `DATABASE_PATH` | Sökväg till SQLite-databasen | `/app/data/elitetube.db` |
-| `MEDIA_PATH` | Rotsökväg för lokala mediafiler | `/media` |
+| `NEXTAUTH_SECRET` | Secret key for JWT signing | `openssl rand -base64 32` |
+| `NEXTAUTH_URL` | Public URL to the app | `https://elitetube.example.com` |
+| `ADMIN_PASSWORD` | Password for the admin account | `yourpassword` |
+| `DATABASE_PATH` | Path to the SQLite database | `/app/data/elitetube.db` |
+| `MEDIA_PATH` | Root path for local media files | `/media` |
 
-## Mediakällor
+## Media sources
 
-Lägg till källor under **Admin → Hantera källor**:
+Add sources under **Admin → Manage sources**:
 
-- **Lokal sökväg** — mapp på servern som monteras in i Docker
-- **SMB** — nätverksdelning (monteras externt och pekas på som lokal sökväg)
-- **Extern URL** — direktlänk till mediafil eller yt-dlp-kompatibel URL
+- **Local path** — folder on the server mounted into Docker
+- **SMB** — network share (mounted externally and pointed to as a local path)
+- **External URL** — direct link to a media file or yt-dlp-compatible URL
 
-## Adult-innehåll
+## YouTube & yt-dlp setup
 
-1. Sätt en PIN-kod under **Admin → Adult-inställningar**
-2. Markera media som `18+` vid tillägg eller redigering
-3. Adult-innehåll visas enbart under 18+-sektionen efter att PIN angetts
+EliteTube uses yt-dlp to stream YouTube and other supported sites. YouTube now requires authentication to avoid bot detection, so a cookies file is needed.
 
-## Licens
+### Why cookies are required
 
-Privat projekt — ej för distribution.
+YouTube blocks requests that look automated. Providing cookies from a logged-in browser session tells YouTube the request comes from a real user.
+
+### Exporting cookies
+
+1. In Chrome or Edge, install the extension **[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)**
+2. Log in to YouTube
+3. Go to `youtube.com`, click the extension icon and choose **Export** — save the file as `cookies.txt`
+
+### Placing the cookies file
+
+Copy `cookies.txt` into the Docker volume so the app can find it at `/app/data/cookies.txt`:
+
+```bash
+# Find the volume mount path
+docker volume inspect elitetube-data --format '{{.Mountpoint}}'
+
+# Copy the file (adjust the path from the command above)
+sudo cp cookies.txt /var/lib/docker/volumes/elitetube-data/_data/cookies.txt
+sudo chown 1001:1001 /var/lib/docker/volumes/elitetube-data/_data/cookies.txt
+```
+
+No restart or rebuild is needed — the file is read on every yt-dlp request.
+
+### Keeping cookies fresh
+
+YouTube cookies expire after a few weeks or when you log out. If YouTube playback stops working, export and replace the cookies file.
+
+### Technical notes
+
+- The Docker image uses **Node.js 20** (required by yt-dlp 2026+ for JavaScript challenge solving)
+- yt-dlp uses `--remote-components ejs:github` to download YouTube's challenge solver on first use
+- Cookies are passed with `--cookies /app/data/cookies.txt` on every yt-dlp call
+
+## Adult content
+
+1. Set a PIN code under **Admin → Adult settings**
+2. Mark media as `18+` when adding or editing
+3. Adult content is only shown in the 18+ section after entering the PIN
+
+## License
+
+Private project — not for distribution.
