@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { MediaItem } from "@/lib/db";
 import { extractYouTubeId, getMediaType } from "@/lib/media";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
+import SpeedSelector from "@/components/SpeedSelector";
 import { useVideoResume } from "@/hooks/useVideoResume";
 
 /* ── Resume chip ── */
@@ -18,11 +19,14 @@ function ResumeChip({ label }: { label: string }) {
 function LocalVideoPlayer({ item, src }: { item: MediaItem; src: string }) {
   const { videoRef, resumedFrom } = useVideoResume(item.id);
   return (
-    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
-      {resumedFrom && <ResumeChip label={resumedFrom} />}
-      <video ref={videoRef} controls autoPlay className="w-full h-full" src={src}>
-        Your browser does not support the video element.
-      </video>
+    <div>
+      <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+        {resumedFrom && <ResumeChip label={resumedFrom} />}
+        <video ref={videoRef} controls autoPlay className="w-full h-full" src={src}>
+          Your browser does not support the video element.
+        </video>
+      </div>
+      <SpeedSelector videoRef={videoRef} />
     </div>
   );
 }
@@ -40,6 +44,7 @@ function AudioPlayer({ item, src }: { item: MediaItem; src: string }) {
         <source src={src} />
         Your browser does not support the audio element.
       </audio>
+      <SpeedSelector videoRef={videoRef} />
     </div>
   );
 }
@@ -118,11 +123,14 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
   }
 
   return (
-    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
-      {resumedFrom && <ResumeChip label={resumedFrom} />}
-      <video ref={videoRef} controls autoPlay className="w-full h-full" src={resolvedUrl!}>
-        Your browser does not support the video element.
-      </video>
+    <div>
+      <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+        {resumedFrom && <ResumeChip label={resumedFrom} />}
+        <video ref={videoRef} controls autoPlay className="w-full h-full" src={resolvedUrl!}>
+          Your browser does not support the video element.
+        </video>
+      </div>
+      <SpeedSelector videoRef={videoRef} />
     </div>
   );
 }
@@ -136,6 +144,7 @@ export default function VideoPlayer({ item }: { item: MediaItem }) {
   if (mtype === "youtube") {
     const ytId = item.url ? extractYouTubeId(item.url) : null;
     if (!ytId) return <div className="text-yt-muted">Invalid YouTube ID</div>;
+    // YouTube iframe has its own speed control in the player menu
     return (
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
         <iframe

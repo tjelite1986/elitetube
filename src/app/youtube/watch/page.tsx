@@ -3,6 +3,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
+import SpeedSelector from "@/components/SpeedSelector";
 import { useVideoResume } from "@/hooks/useVideoResume";
 
 function YouTubeWatchInner() {
@@ -108,6 +109,9 @@ function YouTubeWatchInner() {
             </>
           )}
         </div>
+
+        {/* Speed selector */}
+        {streamUrl && <SpeedSelector videoRef={videoRef} />}
 
         {/* Cookie expired banner */}
         {cookiesExpired && <div className="mb-4"><CookieExpiredBanner /></div>}
