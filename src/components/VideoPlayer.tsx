@@ -1,14 +1,56 @@
 "use client";
 import { useEffect, useState } from "react";
 import { MediaItem } from "@/lib/db";
-import { isYouTubeUrl, extractYouTubeId, getMediaType } from "@/lib/media";
+import { extractYouTubeId, getMediaType } from "@/lib/media";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
+import { useVideoResume } from "@/hooks/useVideoResume";
 
+/* ── Resume chip ── */
+function ResumeChip({ label }: { label: string }) {
+  return (
+    <div className="absolute top-3 left-3 z-10 bg-black/75 text-white text-xs px-2.5 py-1 rounded-full pointer-events-none">
+      Resumed from {label}
+    </div>
+  );
+}
+
+/* ── Local / direct video player ── */
+function LocalVideoPlayer({ item, src }: { item: MediaItem; src: string }) {
+  const { videoRef, resumedFrom } = useVideoResume(item.id);
+  return (
+    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+      {resumedFrom && <ResumeChip label={resumedFrom} />}
+      <video ref={videoRef} controls autoPlay className="w-full h-full" src={src}>
+        Your browser does not support the video element.
+      </video>
+    </div>
+  );
+}
+
+/* ── Audio player ── */
+function AudioPlayer({ item, src }: { item: MediaItem; src: string }) {
+  const { videoRef, resumedFrom } = useVideoResume(item.id);
+  return (
+    <div className="w-full bg-yt-surface rounded-xl p-6">
+      {resumedFrom && (
+        <p className="text-xs text-yt-muted mb-2 text-center">Resumed from {resumedFrom}</p>
+      )}
+      <p className="text-yt-muted text-sm mb-3 text-center">Audio</p>
+      <audio ref={videoRef as React.RefObject<HTMLAudioElement>} controls className="w-full">
+        <source src={src} />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  );
+}
+
+/* ── yt-dlp player ── */
 function YtdlpPlayer({ item }: { item: MediaItem }) {
   const [resolving, setResolving] = useState(true);
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
   const [resolveError, setResolveError] = useState<string | null>(null);
   const [cookiesExpired, setCookiesExpired] = useState(false);
+  const { videoRef, resumedFrom } = useVideoResume(item.id, !!resolvedUrl);
 
   const resolve = () => {
     setResolving(true);
@@ -19,7 +61,6 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
       .then((r) => r.json())
       .then((data) => {
         if (data.url) {
-          // Build proxy URL so the browser never hits the CDN directly (fixes CORS/Referer issues)
           let referer = "";
           try {
             const parsed = new URL(item.url!);
@@ -77,20 +118,20 @@ function YtdlpPlayer({ item }: { item: MediaItem }) {
   }
 
   return (
-    <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
-      <video controls autoPlay className="w-full h-full" src={resolvedUrl!}>
+    <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+      {resumedFrom && <ResumeChip label={resumedFrom} />}
+      <video ref={videoRef} controls autoPlay className="w-full h-full" src={resolvedUrl!}>
         Your browser does not support the video element.
       </video>
     </div>
   );
 }
 
+/* ── Main export ── */
 export default function VideoPlayer({ item }: { item: MediaItem }) {
   const mtype = getMediaType(item);
 
-  if (mtype === "ytdlp") {
-    return <YtdlpPlayer item={item} />;
-  }
+  if (mtype === "ytdlp") return <YtdlpPlayer item={item} />;
 
   if (mtype === "youtube") {
     const ytId = item.url ? extractYouTubeId(item.url) : null;
@@ -118,29 +159,9 @@ export default function VideoPlayer({ item }: { item: MediaItem }) {
 
   if (item.type === "audio") {
     const src = mtype === "direct" ? item.url! : `/api/stream/${item.id}`;
-    return (
-      <div className="w-full bg-yt-surface rounded-xl p-6">
-        <p className="text-yt-muted text-sm mb-3 text-center">Audio</p>
-        <audio controls className="w-full">
-          <source src={src} />
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-    );
+    return <AudioPlayer item={item} src={src} />;
   }
 
-  // Video (local or direct link)
   const src = mtype === "direct" ? item.url! : `/api/stream/${item.id}`;
-  return (
-    <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
-      <video
-        controls
-        autoPlay
-        className="w-full h-full"
-        src={src}
-      >
-        Your browser does not support the video element.
-      </video>
-    </div>
-  );
+  return <LocalVideoPlayer item={item} src={src} />;
 }

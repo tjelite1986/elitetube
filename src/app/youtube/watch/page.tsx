@@ -3,6 +3,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import CookieExpiredBanner from "@/components/CookieExpiredBanner";
+import { useVideoResume } from "@/hooks/useVideoResume";
 
 function YouTubeWatchInner() {
   const searchParams = useSearchParams();
@@ -16,6 +17,7 @@ function YouTubeWatchInner() {
   const [streamUrl, setStreamUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cookiesExpired, setCookiesExpired] = useState(false);
+  const { videoRef, resumedFrom } = useVideoResume(`yt_${videoId}`, !!streamUrl);
 
   const resolve = () => {
     if (!videoId) return;
@@ -88,14 +90,22 @@ function YouTubeWatchInner() {
             </div>
           )}
           {!resolving && streamUrl && (
-            <video
-              controls
-              autoPlay
-              className="w-full h-full"
-              src={streamUrl}
-            >
-              Your browser does not support the video element.
-            </video>
+            <>
+              {resumedFrom && (
+                <div className="absolute top-3 left-3 z-10 bg-black/75 text-white text-xs px-2.5 py-1 rounded-full pointer-events-none">
+                  Resumed from {resumedFrom}
+                </div>
+              )}
+              <video
+                ref={videoRef}
+                controls
+                autoPlay
+                className="w-full h-full"
+                src={streamUrl}
+              >
+                Your browser does not support the video element.
+              </video>
+            </>
           )}
         </div>
 
